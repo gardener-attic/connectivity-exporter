@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: 1
+
+providers:
+- name:                  dashboard-provider
+  type:                  file
+  allowUiUpdates:        true
+  updateIntervalSeconds: 10
+  options:
+    path: /var/lib/grafana/dashboards
+    foldersFromFilesStructure: true

@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+- name: prometheus
+  image: prom/prometheus:v2.30.3
+  command:
+  - /bin/sh
+  - -c
+  - |
+#$(sed 's/^/    /' shim/prometheus.sh)
+  - _
+  - --config.file=/etc/prometheus/prometheus.yml
+  - --web.enable-admin-api
+  - --web.enable-lifecycle
+  - --storage.tsdb.path=/var/lib/prometheus
+  - --storage.tsdb.retention.size
+  - 512MB
+  securityContext: {runAsUser: 0}
+  resources:
+    requests: {cpu: 100m, memory: 800Mi}
+    limits:   {cpu: 100m, memory: 800Mi}
+  volumeMounts:
+  - {name: prometheus,           mountPath: /etc/prometheus}
+  - {name: connectivity-monitor, mountPath: /var/lib/prometheus, subPath: prometheus}
+  - {name: metrics,              mountPath: /metrics}
+  ports: [{containerPort: 9090}]
+  livenessProbe:
+    httpGet:
+      path: /-/healthy
+      port: 9090
+  readinessProbe:
+    httpGet:
+      path: /-/ready
+      port: 9090
+  startupProbe:
+    httpGet:
+      path: /-/healthy
+      port: 9090
+    failureThreshold: 30
+    periodSeconds: 10

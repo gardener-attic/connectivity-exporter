@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+- name: node-exporter
+  image: prom/node-exporter:v1.1.1
+  command:
+  - /bin/sh
+  - -c
+  - |
+#$(sed 's/^/    /' shim/node-exporter.sh)
+  - _
+  - --web.listen-address=:29100
+  - --collector.disable-defaults
+  - --web.disable-exporter-metrics
+  - --collector.textfile
+  - --collector.textfile.directory
+  - /metrics
+  securityContext: {runAsUser: 0}
+  resources:
+    requests: {cpu: 100m, memory: 50Mi}
+    limits:   {cpu: 100m, memory: 50Mi}
+  volumeMounts: [{name: metrics, mountPath: /metrics}]
+  ports: [{containerPort: 29100}]

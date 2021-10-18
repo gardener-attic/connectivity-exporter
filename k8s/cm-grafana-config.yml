@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-config
+  labels: {app: connectivity-monitor}
+data:
+  grafana.ini: |
+#$(sed 's/^/    /' etc/grafana/grafana.ini.toml)
+  prometheus.yml: |
+#$(sed 's/^/    /' etc/grafana/provisioning/datasources/prometheus.yml)
+  dashboards-provider.yml: |
+#$(sed 's/^/    /' etc/grafana/provisioning/dashboards/dashboards-provider.yml)

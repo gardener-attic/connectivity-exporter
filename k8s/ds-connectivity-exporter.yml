@@ -1,0 +1,107 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: connectivity-exporter
+  labels: {app: connectivity-exporter}
+spec:
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 100%
+
+  selector: {matchLabels: {app: connectivity-exporter}}
+  template:
+    metadata: {labels: {app: connectivity-exporter}}
+    spec:
+      serviceAccountName: connectivity-monitor
+      hostNetwork: true
+      priorityClassName: connectivity-exporter
+      dnsPolicy: ClusterFirstWithHostNet
+
+      initContainers:
+
+      - name: image-builder
+        image: docker:20.10.5
+        command:
+        - /bin/sh
+        - -c
+        - |
+          cd /
+          echo "$(
+            printf "\nCreating a .tgz for building the base image of the connectivity-exporter:\n" >&2
+            cd connectivity-exporter
+            tar -czv base-image | base64 | tr -d '\n'
+          )" | base64 -d | tar -xzv
+          cd /base-image
+          time docker build -t connectivity-monitor-exporter-base:1.0 .
+        resources:
+          requests: {cpu: 200m, memory: 100Mi}
+          limits:   {cpu: 2, memory: 2Gi}
+        volumeMounts: [{name: docker-socket, mountPath: /var/run/docker.sock}]
+
+      containers:
+
+      - name: connectivity-exporter
+        image: connectivity-monitor-exporter-base:1.0
+        command:
+        - /bin/sh
+        - -c
+        - |
+          trap 'kill %1' TERM
+          cd /
+          mkdir /connectivity-exporter
+          echo "$(
+            printf "\nCreating a .tgz of the connectivity-exporter source code:\n" >&2
+            tar -czv --exclude=m --exclude=base-image --exclude=caveats --exclude=*_test.go --exclude=*-dev.sh \
+                connectivity-exporter | base64 | tr -d '\n'
+          )" | base64 -d | tar -xzv
+          /connectivity-exporter/main.sh -r $FILTERED_IPS -p $FILTERED_PORTS -v 0 &
+          wait # Wait will abort to yield execution to the trap function to handle the SIGTERM signal
+          wait
+          echo "Good bye!"
+        securityContext: {capabilities: {add: [NET_ADMIN, SYS_RESOURCE, SYS_ADMIN]}}
+        resources:
+          requests: {cpu: 200m, memory: 750Mi}
+          limits:   {cpu: 2, memory: 3Gi}
+        volumeMounts: [{name: metrics, mountPath: /metrics}]
+        ports: [{containerPort: 19100}]
+        readinessProbe:
+          tcpSocket:
+            port: 19100
+
+      - name: node-exporter
+        image: prom/node-exporter:v1.1.1
+        command:
+        - /bin/sh
+        - -c
+        - |
+#$(sed 's/^/          /' shim/node-exporter.sh)
+        - _
+        - --web.listen-address=:29100
+        - --collector.disable-defaults
+        - --web.disable-exporter-metrics
+        - --collector.textfile
+        - --collector.textfile.directory
+        - /metrics
+        securityContext: {runAsUser: 0}
+        resources:
+          requests: {cpu: 100m, memory: 50Mi}
+          limits:   {cpu: 100m, memory: 50Mi}
+        volumeMounts: [{name: metrics, mountPath: /metrics}]
+        ports: [{containerPort: 29100}]
+        readinessProbe:
+          tcpSocket:
+            port: 29100
+
+      volumes:
+
+      - name: metrics
+        emptyDir: {}
+
+      - name: docker-socket
+        hostPath: {path: /var/run/docker.sock, type: Socket}

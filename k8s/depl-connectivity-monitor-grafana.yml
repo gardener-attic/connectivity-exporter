@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: connectivity-monitor-grafana
+  labels: {app: connectivity-monitor-grafana}
+spec:
+  selector: {matchLabels: {app: connectivity-monitor-grafana}}
+  template:
+    metadata:
+      labels: {app: connectivity-monitor-grafana}
+      annotations:
+        checksum/etc-grafana: #$(cat $(find etc/grafana -type f) | sha1sum | awk '{print $1}')
+    spec:
+
+      initContainers:
+
+#$(bin/heredoc.sh                                \
+#    k8s/.connectivity-monitor/image-builder.yml \
+# | sed 's/^/      /')
+
+      containers:
+
+#$(bin/heredoc.sh                                      \
+#    k8s/.connectivity-monitor/grafana-reloader.yml    \
+#    k8s/.connectivity-monitor/grafana.yml             \
+#    k8s/.connectivity-monitor/node-exporter.yml       \
+# | sed 's/^/      /')
+
+      volumes:
+
+#$(bin/heredoc.sh \
+#    k8s/.connectivity-monitor/volumes-grafana.yml \
+# | sed 's/^/      /')

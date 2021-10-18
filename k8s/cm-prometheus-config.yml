@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  labels: {app: connectivity-monitor}
+data:
+  prometheus.heredoc.yml: |
+#$(bin/heredoc.sh etc/prometheus/prometheus.heredoc2.yml \
+#  | sed 's/^/    /' )
+  error_budget.heredoc.yml: |
+#$(bin/heredoc.sh etc/prometheus/rules/error_budget.heredoc2.yml \
+#  | sed 's/^/    /' )

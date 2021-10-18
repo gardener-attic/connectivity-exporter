@@ -1,0 +1,27 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Gardener connectivity monitor
+Upstream-Contact: The Gardener project <gardener@googlegroups.com>
+Source: https://github.com/gardener/connectivity-monitor
+Comment:
+
+# --------------------------------------------------
+# source code
+
+Files:
+  CODEOWNERS
+  VERSION
+  **/.gitignore
+  **/go.mod
+  **/go.sum
+  var/lib/grafana/dashboards/*.json
+Copyright: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+License: Apache-2.0
+
+# --------------------------------------------------
+# documentation
+
+Files:
+  docs/**
+  *.md
+Copyright: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+License: CC-BY-4.0

@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: connectivity-exporter
+  labels: {app: connectivity-exporter}
+description: Higher than zero priority class for the connectivity-exporter.
+value: 1

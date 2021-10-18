@@ -1,0 +1,176 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "title": "",
+      "type": "welcome"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 3
+      },
+      "id": 3,
+      "links": [],
+      "options": {
+        "folderId": null,
+        "maxItems": 30,
+        "query": "",
+        "showHeadings": false,
+        "showRecentlyViewed": false,
+        "showSearch": true,
+        "showStarred": false,
+        "tags": [
+          "connectivity monitor"
+        ]
+      },
+      "pluginVersion": "7.4.3",
+      "tags": [],
+      "title": "Connectivity Monitor Dashboards",
+      "transparent": true,
+      "type": "dashlist"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 20,
+        "w": 12,
+        "x": 12,
+        "y": 3
+      },
+      "id": 7,
+      "options": {
+        "content": "Connectivity Monitor\n====================\n\nTracks the connectivity of a kubernetes cluster to its api server and exposes\n_meaningful_ connectivity metrics.\n\nUses [gopacket][], a golang wrapper for [libpcap][] (the library behind tcpdump)\nto observe all the TCP connection establishments from the shoot cluster to the\nkubernetes api server.\nDerives _meaningful_ connectivity metrics (upper bound for meaningful\navailability) for the kubernetes api server that is running in the seed cluster.\n\nMotivation for Gardener\n-----------------------\n\nDue to the nature of Gardener, api server and cluster are separated.\nIt is important to track connectivity of the api server from the kubernetes\ncluster.\n\n[gopacket]: https://pkg.go.dev/github.com/google/gopacket\n[libpcap]: https://www.tcpdump.org/\n\nCheck out the Github project!\n-----------------------------\n\nhttps://github.tools.sap/kubernetes/connectivity-monitor",
+        "mode": "markdown"
+      },
+      "pluginVersion": "7.4.3",
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Readme",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 12,
+        "x": 0,
+        "y": 10
+      },
+      "id": 5,
+      "links": [],
+      "options": {
+        "folderId": null,
+        "maxItems": 30,
+        "query": "",
+        "showHeadings": false,
+        "showRecentlyViewed": false,
+        "showSearch": true,
+        "showStarred": false,
+        "tags": [
+          "self monitoring"
+        ]
+      },
+      "pluginVersion": "7.4.3",
+      "tags": [],
+      "title": "Self Monitoring Dashboards",
+      "transparent": true,
+      "type": "dashlist"
+    }
+  ],
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "hidden": true,
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ],
+    "type": "timepicker"
+  },
+  "timezone": "browser",
+  "title": "Home",
+  "uid": "home"
+}

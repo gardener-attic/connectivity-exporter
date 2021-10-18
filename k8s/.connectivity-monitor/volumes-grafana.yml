@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+- name: grafana-dashboards-tbz2
+  configMap: {name: grafana-dashboards-tbz2}
+
+- name: grafana-dashboards
+  emptyDir: {}
+
+- name: grafana-config
+  configMap:
+    name: grafana-config
+    items:
+    - {key: grafana.ini,             path: grafana.ini}
+    - {key: prometheus.yml,          path: provisioning/datasources/prometheus.yaml}
+    - {key: dashboards-provider.yml, path: provisioning/dashboards/dashboards-provider.yaml}
+
+- name: metrics
+  emptyDir: {}
+
+- name: docker-socket
+  hostPath: {path: /var/run/docker.sock, type: Socket}

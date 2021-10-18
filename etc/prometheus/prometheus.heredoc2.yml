@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+global:
+  scrape_interval:     2s
+  evaluation_interval: 2s
+  external_labels:
+    hostname: \$(hostname)
+  query_log_file: /var/lib/prometheus/queries/query.log
+
+rule_files:
+  - "rules/error_budget.yml"
+
+scrape_configs:
+
+#$(bin/heredoc.sh etc/prometheus/scrape-config/connectivity-exporter.yml \
+#                 etc/prometheus/scrape-config/node-exporter.yml)

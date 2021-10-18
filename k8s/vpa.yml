@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  labels: {app: connectivity-monitor}
+  name: vpa-connectivity-monitor-prometheus
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: connectivity-monitor-prometheus
+  updatePolicy:
+    updateMode: Auto
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  labels: {app: connectivity-monitor}
+  name: vpa-connectivity-monitor-grafana
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: connectivity-monitor-grafana
+  updatePolicy:
+    updateMode: Auto
+---
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  labels: {app: connectivity-exporter}
+  name: vpa-connectivity-exporter
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: DaemonSet
+    name: connectivity-exporter
+  updatePolicy:
+    updateMode: Auto

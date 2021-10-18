@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: connectivity-monitor-prometheus
+  labels: {app: connectivity-monitor-prometheus}
+spec:
+  selector: {matchLabels: {app: connectivity-monitor-prometheus}}
+  serviceName: connectivity-monitor-prometheus
+  template:
+    metadata:
+      labels: {app: connectivity-monitor-prometheus}
+    spec:
+      serviceAccountName: connectivity-monitor
+
+      initContainers:
+
+#$(bin/heredoc.sh                                \
+#    k8s/.connectivity-monitor/image-builder.yml \
+# | sed 's/^/      /')
+
+      containers:
+
+#$(bin/heredoc.sh                                      \
+#    k8s/.connectivity-monitor/prometheus-reloader.yml \
+#    k8s/.connectivity-monitor/prometheus.yml          \
+#    k8s/.connectivity-monitor/node-exporter.yml       \
+# | sed 's/^/      /')
+
+      volumes:
+
+#$(bin/heredoc.sh                                     \
+#    k8s/.connectivity-monitor/volumes-prometheus.yml \
+# | sed 's/^/      /')
+
+  volumeClaimTemplates:
+
+#$(bin/heredoc.sh                                       \
+#    k8s/.connectivity-monitor/volumeClaimTemplates.yml \
+# | sed 's/^/  /')

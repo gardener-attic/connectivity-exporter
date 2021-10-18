@@ -1,0 +1,107 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+groups:
+
+- name: error_budget
+  interval: 5s
+  rules:
+
+  - record: service:sli_failed_seconds
+    expr: max(rate(connectivity_exporter_seconds_total{job="connectivity-exporter-ds", kind="failed"}[5s]) * 5)
+
+  - record: service:slo
+    expr: (1 - 0.0005) * 100
+
+  - record: service:slo_100
+    expr: (100)
+
+  - record: service:sli_failed_seconds:day
+    expr: |
+      service:sli_failed_seconds
+      + ignoring(day) group_right
+      count_values without() ("day",
+        floor(
+          timestamp(
+            service:sli_failed_seconds
+          ) / 60 / 60 / 24
+        )
+      ) * 0
+
+  - record: service:sli_failed_seconds:week
+    expr: |
+      service:sli_failed_seconds
+      + ignoring(week) group_right
+      count_values without() ("week",
+        floor(
+          (
+            timestamp(
+              service:sli_failed_seconds
+            ) - 4 * 24 * 60 * 60
+          ) / 60 / 60 / 24 / 7
+        )
+      ) * 0
+
+  - record: service:sli_failed_seconds:yearmonth
+    expr: |
+      service:sli_failed_seconds
+      + ignoring(year, month) group_right
+      count_values without() ("year",
+        year(timestamp(
+          count_values without() ("month",
+            month(timestamp(
+              service:sli_failed_seconds
+            ))
+          )
+        ))
+      ) * 0
+
+  - record: service:sli_failed_seconds:time
+    expr: |
+      service:sli_failed_seconds:day or
+      service:sli_failed_seconds:week or
+      service:sli_failed_seconds:yearmonth
+
+  - record: service:sli_failed_seconds:time:total
+    expr: |
+      service:sli_failed_seconds:time
+      +
+      (
+        max_over_time(
+          service:sli_failed_seconds:time:total[10m]
+        )
+        or
+        service:sli_failed_seconds:time * 0
+      )
+
+  - record: service:sli_failed_seconds:time:total:percent
+    labels:
+      term: day
+    expr: |
+      sum without(day) (
+        service:sli_failed_seconds:time:total{day!=""}
+      )
+      / 60 / 60 / 24
+
+  - record: service:sli_failed_seconds:time:total:percent
+    labels:
+      term: week
+    expr: |
+      sum without(week) (
+        service:sli_failed_seconds:time:total{week!=""}
+      )
+      / 60 / 60 / 24 / 7
+
+  - record: service:sli_failed_seconds:time:total:percent
+    labels:
+      term: year_month
+    expr: |
+      sum without(year, month) (
+        service:sli_failed_seconds:time:total{year!="", month!=""}
+      )
+      / 60 / 60 / 24
+      / days_in_month(timestamp(
+        sum without(year, month)
+          (service:sli_failed_seconds:time:total{year!="", month!=""})
+      ))
