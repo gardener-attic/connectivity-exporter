@@ -190,8 +190,8 @@ by a user (running in the shoot cluster) will be reported as a failed second.
 Overview
 --------
 
-The following sketch shows where are the TCP connections captured and how is
-time annotated based on the assessed connection states.
+The following sketch shows where the TCP connections are captured and how time
+is annotated based on the assessed connection states.
 
 ![overview](docs/overview.png)
 
