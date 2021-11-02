@@ -18,6 +18,8 @@ Can be deployed in two different modes:
 - Deployed in a seed cluster to track the connectivity of all shoot clusters
   hosted on the seed.
 
+To deploy: run `hack/deploy.sh toShoot` or `hack/deploy.sh toSeed`.
+
 The network path
 ----------------
 

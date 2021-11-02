@@ -6,7 +6,33 @@
 
 set -e
 
+toShoot() {
+  API_SERVER=$(bin/server.sh | sed -E 's|https?://||')
+  API_SERVER_IP=$(dig +short "$API_SERVER" | grep -v -E '^;;|^$')
+
+  FILTERED_IPS=$API_SERVER_IP
+  FILTERED_PORTS=443
+
+  export FILTERED_IPS FILTERED_PORTS
+}
+
+toSeed() {
+  # Deploy in a seed cluster to track the connectivity of all shoot clusters
+  # hosted on the seed.
+  FILTERED_IPS=0.0.0.0/0
+  FILTERED_PORTS=$(bin/node-port.sh)
+
+  export FILTERED_IPS FILTERED_PORTS
+}
+
 cd "$(dirname "$(realpath "$0")")/.." || exit 1
+
+if [ "$*" != "toShoot" ] && [ "$*" != "toSeed" ]; then
+  echo "Usage: please run this script with the parameter toShoot or toSeed"
+  exit 1
+fi
+
+eval "$@"
 
 if [ -z "$FILTERED_IPS" ] || [ -z "$FILTERED_PORTS" ]; then
   echo "Usage: please export the FILTERED_IPS and FILTERED_PORTS variables" >&2
