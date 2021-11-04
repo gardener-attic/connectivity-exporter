@@ -374,6 +374,8 @@ func TestSNI(t *testing.T) {
 }
 
 func TestBPFExecutionTracking(t *testing.T) {
+	t.Skip("Performance tests skipped: see note about bpf_ktime_get_ns() in connectivity-exporter/packet/c/cap.c")
+
 	ec, err := newEBPFConfig()
 	if err != nil {
 		t.Fatalf("Creating eBPF config: %v", err)
@@ -435,6 +437,8 @@ func TestBPFExecutionTracking(t *testing.T) {
 }
 
 func TestBPFExecutionTrackingManyRuns(t *testing.T) {
+	t.Skip("Performance tests skipped: see note about bpf_ktime_get_ns() in connectivity-exporter/packet/c/cap.c")
+
 	ec, err := newEBPFConfig()
 	if err != nil {
 		t.Fatalf("Creating eBPF config: %v", err)
