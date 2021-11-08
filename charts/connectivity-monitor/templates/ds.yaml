@@ -1,0 +1,66 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: connectivity-exporter-config
+  namespace: {{ .Release.Namespace }}
+  labels: {app: connectivity-exporter}
+data:
+  filtered-ports: "443,6443"
+  filtered-ips: "0.0.0.0/0"
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: connectivity-exporter
+  namespace: {{ .Release.Namespace }}
+  labels: {app: connectivity-exporter}
+spec:
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 100%
+
+  selector: {matchLabels: {app: connectivity-exporter}}
+  template:
+    metadata: {labels: {app: connectivity-exporter}}
+    spec:
+      serviceAccountName: connectivity-monitor
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+
+      containers:
+
+      - name: connectivity-exporter
+        image: {{ .Values.image.registry}}/{{ .Values.image.name }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - /bin/sh
+        - -c
+        - |
+          /bin/connectivity-exporter -r $FILTERED_IPS -p $FILTERED_PORTS -v 0 -metrics-addr "{{ .Values.metrics.host }}:{{ .Values.metrics.port }}"
+          echo "Good bye!"
+        env:
+          - name: FILTERED_PORTS
+            valueFrom:
+              configMapKeyRef:
+                name: connectivity-exporter-config
+                key: filtered-ports
+          - name: FILTERED_IPS
+            valueFrom:
+              configMapKeyRef:
+                name: connectivity-exporter-config
+                key: filtered-ips
+
+        securityContext: {capabilities: {add: [NET_ADMIN, SYS_RESOURCE, SYS_ADMIN]}}
+        resources:
+          requests: {cpu: 200m, memory: 750Mi}
+          limits:   {cpu: 2, memory: 3Gi}
+        ports: [{containerPort: {{ .Values.metrics.port }}}]
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.metrics.port }}
