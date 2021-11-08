@@ -27,6 +27,7 @@ var (
 	networkInterface = flag.String("i", "", "Network interface to listen on")
 	cidrs            = flag.String("r", "", "Network CIDRs, comma separated")
 	ports            = flag.String("p", "", "Ports, comma separated")
+	addr             = flag.String("metrics-addr", ":19100", "Bind and listen address for the metrics")
 
 	incs      = make(chan *metrics.Inc)
 	snapshots = make(chan promextra.Snapshot)
@@ -64,7 +65,7 @@ func main() {
 	go dataSource.TrackExecutionTime(ctx, wg, time.NewTicker(time.Second).C, snapshots)
 	go dataSource.TrackConnections(ctx, wg, time.NewTicker(time.Second).C, incs)
 	go metrics.Apply(ctx, wg, incs, snapshots)
-	go metrics.ListenAndServe(ctx, wg)
+	go metrics.ListenAndServe(ctx, *addr, wg)
 
 	sig := <-signals
 	klog.Infof("Received signal '%s'. Initiating a graceful shutdown.\n", sig)
