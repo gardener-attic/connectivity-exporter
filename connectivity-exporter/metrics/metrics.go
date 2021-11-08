@@ -16,13 +16,13 @@ import (
 )
 
 // ListenAndServe starts the http server to expose the prometheus metrics
-func ListenAndServe(ctx context.Context, wg *sync.WaitGroup) {
+func ListenAndServe(ctx context.Context, addr string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	defer klog.Infoln("Bye.")
 
 	http.Handle("/metrics", promhttp.Handler())
 	klog.Info("Starting connectivity-exporter")
-	server := &http.Server{Addr: ":19100", Handler: nil}
+	server := &http.Server{Addr: addr, Handler: nil}
 
 	go func() {
 		<-ctx.Done()
