@@ -156,11 +156,15 @@ type ebpfAttachment struct {
 
 // attachProgramToNetworkInterface returns an ebpfAttachment object
 func attachProgramToNetworkInterface(prog *ebpf.Program, networkInterface string) (*ebpfAttachment, error) {
-	iface, err := net.InterfaceByName(networkInterface)
-	if err != nil {
-		return nil, err
+	ifaceIndex := 0
+	if networkInterface != "" {
+		iface, err := net.InterfaceByName(networkInterface)
+		if err != nil {
+			return nil, err
+		}
+		ifaceIndex = iface.Index
 	}
-	fd, err := openRawSock(iface.Index)
+	fd, err := openRawSock(ifaceIndex)
 	if err != nil {
 		return nil, err
 	}
