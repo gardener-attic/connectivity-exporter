@@ -17,12 +17,6 @@ spec:
     spec:
       serviceAccountName: connectivity-monitor
 
-      initContainers:
-
-#$(bin/heredoc.sh                                \
-#    k8s/.connectivity-monitor/image-builder.yml \
-# | sed 's/^/      /')
-
       containers:
 
 #$(bin/heredoc.sh                                      \

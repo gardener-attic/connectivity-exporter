@@ -17,12 +17,6 @@ spec:
         checksum/etc-grafana: #$(cat $(find etc/grafana -type f) | sha1sum | awk '{print $1}')
     spec:
 
-      initContainers:
-
-#$(bin/heredoc.sh                                \
-#    k8s/.connectivity-monitor/image-builder.yml \
-# | sed 's/^/      /')
-
       containers:
 
 #$(bin/heredoc.sh                                      \

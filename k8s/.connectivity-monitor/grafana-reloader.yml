@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 - name: grafana-reloader
-  image: connectivity-monitor-reloader-base:1.0
+  image: alpine:3.13.2
   command:
   - /bin/sh
   - -c
