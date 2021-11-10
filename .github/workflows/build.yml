@@ -9,9 +9,9 @@ jobs:
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
-    permissions: 
+    permissions:
       contents: read
-      packages: write 
+      packages: write
 
     steps:
 
@@ -103,6 +103,15 @@ jobs:
       run: |
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+    - name: Format Go code
+      run: |
+          OUTPUT=$(gofmt -l ./connectivity-exporter)
+          if [ -n "$OUTPUT" ]; then
+            echo "Please format the following files using gofmt"
+            echo "${OUTPUT}"
+            exit 1
+          fi
 
     - name: Build
       run: |
