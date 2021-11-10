@@ -1,6 +1,6 @@
 # New eBPF architecture for connectivity-monitor
 
-![Flows of execution](doc/flows.png "Flows of execution")
+![Flows of execution](flows.png "Flows of execution")
 
 ## Map `config_ips`
 
