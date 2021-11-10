@@ -20,6 +20,8 @@ import (
 	"golang.org/x/sys/unix"
 	"k8s.io/klog/v2"
 
+	_ "net/http/pprof"
+
 	_ "go.uber.org/automaxprocs"
 )
 
