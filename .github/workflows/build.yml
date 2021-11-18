@@ -88,8 +88,8 @@ jobs:
     - name: Build
       uses: docker/build-push-action@v2
       with:
-        context: connectivity-exporter/base-image
-        file: connectivity-exporter/base-image/Dockerfile
+        context: connectivity-exporter
+        file: connectivity-exporter/Dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}

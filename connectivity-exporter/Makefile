@@ -2,7 +2,48 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+REGISTRY ?= ghcr.io
+IMAGE_NAME ?= gardener/connectivity-monitor
+IMAGE_TAG ?= main
+
 all: build
+
+.PHONY: docker/build
+docker/build:
+	docker build -t $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG) -f Dockerfile .
+
+.PHONY: docker/push
+docker/push:
+	docker push $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG)
+
+.PHONY: helm/generate
+helm/generate:
+	helm template \
+		connectivity-monitor ../charts/connectivity-monitor \
+		--output-dir bin/ \
+		--create-namespace \
+		--namespace connectivity-monitor \
+		--values ../charts/connectivity-monitor/values.yaml \
+		--set-string image.registry=$(REGISTRY) \
+		--set-string image.name=$(IMAGE_NAME) \
+		--set-string image.tag=$(IMAGE_TAG)
+
+.PHONY: helm/install
+helm/install:
+	helm upgrade --install \
+		connectivity-monitor ../charts/connectivity-monitor \
+		--create-namespace \
+		--namespace connectivity-monitor \
+		--values ../charts/connectivity-monitor/values.yaml \
+		--set-string image.registry=$(REGISTRY) \
+		--set-string image.name=$(IMAGE_NAME) \
+		--set-string image.tag=$(IMAGE_TAG)
+
+.PHONY: helm/uninstall
+helm/uninstall:
+	helm uninstall \
+		connectivity-monitor \
+		--namespace connectivity-monitor
 
 CLANG_OS_FLAGS = ""
 
