@@ -110,6 +110,7 @@ jobs:
           if [ -n "$OUTPUT" ]; then
             echo "Please format the following files using gofmt"
             echo "${OUTPUT}"
+            gofmt -d ./connectivity-exporter
             exit 1
           fi
 
