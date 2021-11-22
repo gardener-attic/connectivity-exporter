@@ -5,10 +5,10 @@
 // Do not build this file by default, it's only parsed by go mod to
 // pull the dependencies.
 
+//go:build tools
 // +build tools
 
 package tools
-
 
 import (
 	_ "github.com/golangci/golangci-lint/cmd/golangci-lint"
