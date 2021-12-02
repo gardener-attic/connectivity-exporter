@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-cd "$(dirname "$(realpath "$0")")/.." || exit 1
+cd "$(dirname "$(realpath "$0")")" || exit 1
 
 curl -s "localhost:3000/api/search?type=dash-db" \
 | jq -r '.[]
