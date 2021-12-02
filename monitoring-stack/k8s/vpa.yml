@@ -28,16 +28,3 @@ spec:
     name: connectivity-monitor-grafana
   updatePolicy:
     updateMode: Auto
----
-apiVersion: autoscaling.k8s.io/v1
-kind: VerticalPodAutoscaler
-metadata:
-  labels: {app: connectivity-exporter}
-  name: vpa-connectivity-exporter
-spec:
-  targetRef:
-    apiVersion: apps/v1
-    kind: DaemonSet
-    name: connectivity-exporter
-  updatePolicy:
-    updateMode: Auto
