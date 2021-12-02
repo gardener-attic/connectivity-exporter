@@ -29,7 +29,7 @@ spec:
   template:
     metadata: {labels: {app: connectivity-exporter}}
     spec:
-      serviceAccountName: connectivity-monitor
+      serviceAccountName: connectivity-exporter
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
 
