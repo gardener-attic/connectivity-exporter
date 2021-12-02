@@ -19,20 +19,20 @@ spec:
 
       containers:
 
-#$(bin/heredoc.sh                                      \
-#    k8s/.connectivity-monitor/prometheus-reloader.yml \
-#    k8s/.connectivity-monitor/prometheus.yml          \
-#    k8s/.connectivity-monitor/node-exporter.yml       \
+#$(bin/heredoc.sh                            \
+#    k8s/.snippets/c-prometheus.yml          \
+#    k8s/.snippets/c-prometheus-reloader.yml \
+#    k8s/.snippets/c-node-exporter.yml       \
 # | sed 's/^/      /')
 
       volumes:
 
-#$(bin/heredoc.sh                                     \
-#    k8s/.connectivity-monitor/volumes-prometheus.yml \
+#$(bin/heredoc.sh                         \
+#    k8s/.snippets/volumes-prometheus.yml \
 # | sed 's/^/      /')
 
   volumeClaimTemplates:
 
-#$(bin/heredoc.sh                                       \
-#    k8s/.connectivity-monitor/volumeClaimTemplates.yml \
+#$(bin/heredoc.sh                     \
+#    k8s/.snippets/vct-prometheus.yml \
 # | sed 's/^/  /')

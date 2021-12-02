@@ -19,14 +19,14 @@ spec:
 
       containers:
 
-#$(bin/heredoc.sh                                      \
-#    k8s/.connectivity-monitor/grafana-reloader.yml    \
-#    k8s/.connectivity-monitor/grafana.yml             \
-#    k8s/.connectivity-monitor/node-exporter.yml       \
+#$(bin/heredoc.sh                         \
+#    k8s/.snippets/c-grafana.yml          \
+#    k8s/.snippets/c-grafana-reloader.yml \
+#    k8s/.snippets/c-node-exporter.yml    \
 # | sed 's/^/      /')
 
       volumes:
 
-#$(bin/heredoc.sh \
-#    k8s/.connectivity-monitor/volumes-grafana.yml \
+#$(bin/heredoc.sh                      \
+#    k8s/.snippets/volumes-grafana.yml \
 # | sed 's/^/      /')
