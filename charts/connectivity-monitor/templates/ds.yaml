@@ -60,7 +60,7 @@ spec:
         resources:
           requests: {cpu: 200m, memory: 750Mi}
           limits:   {cpu: 2, memory: 3Gi}
-        ports: [{containerPort: {{ .Values.metrics.port }}}]
+        ports: [{name: metrics, containerPort: {{ .Values.metrics.port }}}]
         readinessProbe:
           tcpSocket:
             port: {{ .Values.metrics.port }}

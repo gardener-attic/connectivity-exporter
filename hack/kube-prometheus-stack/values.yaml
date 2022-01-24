@@ -12,10 +12,14 @@ defaultRules:
   create: false
 
 grafana:
-  defaultDashboardsEnabled: false
   image:
     repository: grafana/grafana
     tag: 7.5.13
+  sidecar:
+    dashboards:
+      enabled: true
+      searchNamespace: ALL
+  defaultDashboardsEnabled: false
 
 kubeApiServer:
   enabled: false

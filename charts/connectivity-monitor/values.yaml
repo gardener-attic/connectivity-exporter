@@ -16,5 +16,10 @@ metrics:
   host: ""
   port: "19101"
 
-kube-prometheus-stack-config:
+kubePrometheusStackConfig:
+  release: kube-prometheus-stack
   enabled: true
+  grafana:
+    sidecar:
+      dashboards:
+        label: grafana_dashboard
