@@ -146,7 +146,7 @@ static inline void add_connection_to_stats(struct tuple_key_t *key, char *sni_st
 // Parses the provided SKB at the given offset for SNI information. If parsing
 // succeeds, the SNI information is written to the out array. Returns the
 // number of characters in the SNI field or 0 if SNI couldn't be parsed.
-static inline int parse_sni(struct __sk_buff *skb, __u8 data_offset, char *out)
+static inline int parse_sni(struct __sk_buff *skb, int data_offset, char *out)
 {
   // Verify TLS content type.
   __u8 content_type;
@@ -160,27 +160,27 @@ static inline int parse_sni(struct __sk_buff *skb, __u8 data_offset, char *out)
   if (handshake_type != TLS_HANDSHAKE_TYPE_CLIENT_HELLO)
     return 0;
 
-  __u8 session_id_len_off = data_offset + TLS_SESSION_ID_LENGTH_OFF;
+  int session_id_len_off = data_offset + TLS_SESSION_ID_LENGTH_OFF;
   __u8 session_id_len;
   bpf_skb_load_bytes(skb, session_id_len_off, &session_id_len, 1);
 
-  __u8 cipher_suites_len_off =
+  int cipher_suites_len_off =
       session_id_len_off + TLS_SESSION_ID_LENGTH_LEN + session_id_len;
   __u16 cipher_suites_len_be;
   bpf_skb_load_bytes(skb, cipher_suites_len_off, &cipher_suites_len_be, 2);
 
-  __u8 compression_methods_len_off =
+  int compression_methods_len_off =
       cipher_suites_len_off + TLS_CIPHER_SUITES_LENGTH_LEN +
       bpf_ntohs(cipher_suites_len_be);
   __u8 compression_methods_len;
   bpf_skb_load_bytes(skb, compression_methods_len_off,
       &compression_methods_len, 1);
 
-  __u8 extensions_len_off =
+  int extensions_len_off =
       compression_methods_len_off + TLS_COMPRESSION_METHODS_LENGTH_LEN +
         compression_methods_len;
 
-  __u8 extensions_off = extensions_len_off + TLS_EXTENSIONS_LENGTH_LEN;
+  int extensions_off = extensions_len_off + TLS_EXTENSIONS_LENGTH_LEN;
 
   // TODO: Ensure the cursor doesn't surpass the extensions length value?
   __u16 cur = 0;
@@ -251,7 +251,7 @@ int capture_packets_internal(struct __sk_buff *skb)
     return 0;
   }
 
-  __u8 ip_off = ETH_HLEN;
+  int ip_off = ETH_HLEN;
 
   // Read the IP header.
   struct iphdr iph;
@@ -283,7 +283,7 @@ int capture_packets_internal(struct __sk_buff *skb)
   // represents the size of the IP header in 32-bit words, so we need to
   // multiply this value by 4 to get the header size in bytes.
   __u8 ip_header_len = iph.ihl * 4;
-  __u8 tcp_off = ip_off + ip_header_len;
+  int tcp_off = ip_off + ip_header_len;
 
   // Read the TCP header.
   struct tcphdr tcph;
@@ -363,7 +363,7 @@ int capture_packets_internal(struct __sk_buff *skb)
     // have to multiply this value by 4 to get the TCP header length in bytes.
     __u8 tcp_header_len = tcph.doff * 4;
     // TLS data starts at this offset.
-    __u8 payload_off = tcp_off + tcp_header_len;
+    int payload_off = tcp_off + tcp_header_len;
 
     if (conn->state == SNI_RECEIVED) {
       if (conn->num_packets > CONN_MIN_NUM_OF_PACKETS
