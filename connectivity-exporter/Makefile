@@ -48,7 +48,7 @@ helm/uninstall:
 CLANG_OS_FLAGS = ""
 
 ifeq ($(shell lsb_release -si 2>/dev/null), Ubuntu)
-	CLANG_OS_FLAGS="-I/usr/include/x86_64-linux-gnu"
+	CLANG_OS_FLAGS="-I/usr/include/$(shell uname -m)-linux-gnu"
 endif
 
 .PHONY: build
