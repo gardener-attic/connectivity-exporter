@@ -131,7 +131,12 @@ func (s *NetworkDataSource) TrackConnections(ctx context.Context, wg *sync.WaitG
 	var val C.struct_tuple_data_t
 	var currentTickerClock uint64
 
-	snis := make(map[string][]*tupleData)
+	// Set of encountered SNIs, in either of the 2 maps
+	sniSet := map[string]struct{}{}
+
+	// keep track of failed second between ticks for each SNI in order to
+	// carry over failed seconds during inactive seconds.
+	previousFailedSecond := map[string]bool{}
 
 	done := ctx.Done()
 	for {
@@ -170,19 +175,47 @@ func (s *NetworkDataSource) TrackConnections(ctx context.Context, wg *sync.WaitG
 				continue
 			}
 
-			for sni := range snis {
-				snis[sni] = []*tupleData{}
+			// Get the union of SNIs from both BPF maps. Some SNIs
+			// might be in connectionMap only, in statsMap only, or
+			// in both.
+			for _, v := range oldConnections {
+				if v.sni != "" {
+					sniSet[v.sni] = struct{}{}
+				}
+			}
+			for k := range statsValuesAtKey {
+				if k != "" {
+					sniSet[k] = struct{}{}
+				}
+			}
+
+			staleConnections := make(map[string][]*tupleData)
+			for sni := range sniSet {
+				staleConnections[sni] = []*tupleData{}
 			}
 
 			for _, v := range oldConnections {
 				if v.sni == "" {
+					// TODO: How to account for this connection if we don't know the SNI?
 					klog.Errorf("Empty SNI: %+v", v)
+				} else {
+					staleConnections[v.sni] = append(staleConnections[v.sni], v)
 				}
-				snis[v.sni] = append(snis[v.sni], v)
 			}
 
-			for sni, connections := range snis {
-				incs <- state.accountForConnections(sni, connections, s, statsValuesAtKey)
+			for sni := range sniSet {
+				var succeeded_connections, failed_connections uint64
+				if completedConnections, ok := statsValuesAtKey[sni]; ok {
+					succeeded_connections = completedConnections[0]
+					failed_connections = completedConnections[1]
+				}
+
+				if _, ok := previousFailedSecond[sni]; !ok {
+					previousFailedSecond[sni] = false
+				}
+				inc, failedSecond := state.accountForConnections(sni, previousFailedSecond[sni], staleConnections[sni], succeeded_connections, failed_connections)
+				previousFailedSecond[sni] = failedSecond
+				incs <- inc
 			}
 
 			// Update the counter to new value.
@@ -202,6 +235,9 @@ func newState() *State {
 }
 
 // getOldestStatsAndCleanup reads the stats map at the given index and cleans up the inner stats map at that index.
+// Returned variable out is a map of sni to:
+// - succeeded_connections := innerValue[0]
+// - failed_connections := innerValue[1]
 func getOldestStatsAndCleanup(s *NetworkDataSource, statsKey uint64) (out map[string][2]uint64, err error) {
 	var innerMap *ebpf.Map
 
@@ -236,17 +272,21 @@ func isConnectionOld(tickerClockFirstPacket, current_ticker_clock uint64) bool {
 	return current_ticker_clock > C.STATS_SECONDS_COUNT+uint64(tickerClockFirstPacket)
 }
 
-func (s *State) accountForConnections(sni string, connMapInfo []*tupleData, dataSource *NetworkDataSource, statsValuesAtKey map[string][2]uint64) *metrics.Inc {
+func (s *State) accountForConnections(
+	sni string,
+	previousFailedSecond bool,
+	staleConnMapInfo []*tupleData,
+	succeeded_connections, failed_connections uint64,
+) (i *metrics.Inc, failedSecond bool) {
 	if sni == "" {
 		klog.Error("SNI is empty")
 	}
 	inc := &metrics.Inc{AllSeconds: 1, OrphanPackets: s.orphanPackets, SNI: sni} // TODO: check: orphan packets should be counter -> do not set to current value
 
-	klog.Infof("sni: %s, connections: %d", sni, len(connMapInfo))
-	var activeSecond, activeFailedSecond, failedSecond bool
+	klog.Infof("sni: %s, connections: %d", sni, len(staleConnMapInfo))
+	var activeSecond, activeFailedSecond bool
 
-	for _, v := range connMapInfo {
-		activeSecond = true
+	for _, v := range staleConnMapInfo {
 		state := v.state
 		// TODO handle all the states
 		// note: TCP FIN state is ambiguous, rejection depends on who sent the RST packet
@@ -265,11 +305,16 @@ func (s *State) accountForConnections(sni string, connMapInfo []*tupleData, data
 		}
 	}
 
-	for _, v := range statsValuesAtKey {
-		if float64(v[1]) > 0 {
-			failedSecond = true
-		}
-		// inc.FailedSeconds = float64(v[1]) // TODO: what can this value be?
+	if len(staleConnMapInfo) > 0 || succeeded_connections > 0 || failed_connections > 0 {
+		activeSecond = true
+	}
+	if failed_connections > 0 {
+		activeFailedSecond = true
+	}
+
+	// the second failed if we carry the failure from before, or if there is a new failure
+	if (previousFailedSecond && !activeSecond) || activeFailedSecond {
+		failedSecond = true
 	}
 
 	if activeFailedSecond {
@@ -285,5 +330,5 @@ func (s *State) accountForConnections(sni string, connMapInfo []*tupleData, data
 	}
 
 	s.orphanPackets = 0
-	return inc
+	return inc, failedSecond
 }
