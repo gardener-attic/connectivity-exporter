@@ -103,8 +103,8 @@ static inline void run_test_hook(__u64 i)
     char sni_string[TLS_MAX_SERVER_NAME_LEN] = "my-sni-server";
     s = bpf_map_lookup_elem(inner_map, sni_string);
     if (s) {
-      s->failed_seconds++;
-      s->succeeded_seconds++;
+      s->failed_connections++;
+      s->succeeded_connections++;
     } else {
       struct sni_stats_t new_stats = {42, 43};
       bpf_map_update_elem(inner_map, sni_string, &new_stats, BPF_ANY);
@@ -128,9 +128,9 @@ static inline void add_connection_to_stats(struct tuple_key_t *key, char *sni_st
   s = bpf_map_lookup_elem(inner_map, sni_string);
   if (s) {
     if (successful_connection)
-      __sync_fetch_and_add(&s->succeeded_seconds, 1); // TODO: Use core specific datastructures to avoid synchronization
+      __sync_fetch_and_add(&s->succeeded_connections, 1); // TODO: Use core specific datastructures to avoid synchronization
     else
-      __sync_fetch_and_add(&s->failed_seconds, 1);
+      __sync_fetch_and_add(&s->failed_connections, 1);
   } else {
     struct sni_stats_t new_stats = {
       successful_connection ? 1 : 0,

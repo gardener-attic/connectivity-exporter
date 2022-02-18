@@ -424,8 +424,8 @@ func getStats(outerMap *ebpf.Map) (out []map[string][2]uint64, err error) {
 		for innerEntries.Next(&innerKey, &innerValue) {
 			sniString := strings.SplitN(innerKey, "\000", 2)[0]
 
-			// succeeded_seconds := innerValue[0]
-			// failed_seconds := innerValue[1]
+			// succeeded_connections := innerValue[0]
+			// failed_connections := innerValue[1]
 			out[outerKey][sniString] = innerValue
 		}
 		if err := innerEntries.Err(); err != nil {

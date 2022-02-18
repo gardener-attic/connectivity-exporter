@@ -172,22 +172,22 @@ seconds.
 
 ```
 struct sni_stats_t {
-    u64 succeeded_seconds
-    u64 failed_seconds
+    u64 succeeded_connections
+    u64 failed_connections
 }
 ```
 
 When the eBPF program parses an RST packet for an existing connection with a
-known SNI, the program needs to increment the `failed_seconds` counter at the
+known SNI, the program needs to increment the `failed_connections` counter at the
 correct index.
 We have two implementation choices:.
 
-* Increment the `failed_seconds` counter at the "now" index, as specified in
+* Increment the `failed_connections` counter at the "now" index, as specified in
   the `ticker_clock` map.
   In this case, there is a 20-second delay before the event is recorded in the
   Prometheus graphs but the event is synchronized with the events about
   successful connections.
-* Increment the `failed_seconds` counter at the index
+* Increment the `failed_connections` counter at the index
   `ticker_clock_first_packet` as specified in the "connections" map for that
   connection.
   In that case, the event is reported sooner, but the "failed" graph isn't
@@ -196,7 +196,7 @@ We have two implementation choices:.
   (older than 20 seconds) don't corrupt data.
 
 When the eBPF program parses a FIN packet for an existing connection with known
-SNI, it increments the `succeeded_seconds` counter.
+SNI, it increments the `succeeded_connections` counter.
 
 ## Flow: the scrapper Goroutine
 
@@ -209,7 +209,7 @@ In an infinite loop:
   * If the connection was in `SYN_RECEIVED` or `SYNACK_RECEIVED` state,
     increment the dormant connection counter.
   * If the connection was in `SNI_RECEIVED` state, increment the local
-    `succeeded_seconds` counter for that SNI.
+    `succeeded_connections` counter for that SNI.
 
 * Iterate on the "stats" map:
 

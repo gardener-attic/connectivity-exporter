@@ -105,8 +105,8 @@ struct tuple_data_t {
 };
 
 struct sni_stats_t {
-    __u64 succeeded_seconds; // TODO: Should be succeeded_connections instead of seconds
-    __u64 failed_seconds;    // TODO: Should be failed_connections instead of seconds
+    __u64 succeeded_connections;
+    __u64 failed_connections;
 };
 
 // A number of linear buckets in histogram.
