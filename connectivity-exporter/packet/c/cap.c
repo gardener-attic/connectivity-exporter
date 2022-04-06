@@ -396,7 +396,7 @@ int capture_packets_internal(struct __sk_buff *skb)
       // the connection as failed.
       add_connection_to_stats(&key, conn->sni, false);
     } else { // Client RST
-      conn->state = RST_RECEIVED;
+      // conn->state = RST_RECEIVED;
       // Client RST does not indicate server unavailability. Therefore, treat
       // the connection as successful.
       add_connection_to_stats(&key, conn->sni, true);
