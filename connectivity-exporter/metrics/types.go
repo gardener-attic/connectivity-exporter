@@ -20,6 +20,7 @@ type Inc struct {
 	SuccessfulConnections,
 	UnacknowledgedConnections,
 	RejectedConnections,
+	RejectedConnectionsByClient,
 	OrphanPackets float64
 	SNI string
 }

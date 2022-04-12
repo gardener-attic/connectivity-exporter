@@ -299,9 +299,13 @@ func (s *State) accountForConnections(
 			inc.SuccessfulConnections++
 		}
 
-		if state == RST_RECEIVED {
+		if state == RST_SENT_BY_SERVER {
 			activeFailedSecond = true
 			inc.RejectedConnections++
+		}
+
+		if state == RST_SENT_BY_CLIENT {
+			inc.RejectedConnectionsByClient++
 		}
 	}
 

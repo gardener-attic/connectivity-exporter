@@ -391,12 +391,12 @@ int capture_packets_internal(struct __sk_buff *skb)
 
   if (tcph.rst) {
     if (server_to_client) { // Server RST
-      conn->state = RST_RECEIVED;
+      conn->state = RST_SENT_BY_SERVER;
       // Server RST could indicate server unavailability. Therefore, treat
       // the connection as failed.
       add_connection_to_stats(&key, conn->sni, false);
     } else { // Client RST
-      conn->state = RST_RECEIVED;
+      conn->state = RST_SENT_BY_CLIENT;
       // Client RST does not indicate server unavailability. Therefore, treat
       // the connection as successful.
       add_connection_to_stats(&key, conn->sni, true);

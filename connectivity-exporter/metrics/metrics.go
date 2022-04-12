@@ -63,6 +63,7 @@ func applyInc(inc *Inc) {
 	connections.WithLabelValues("successful", inc.SNI).Add(inc.SuccessfulConnections)
 	connections.WithLabelValues("unacknowledged", inc.SNI).Add(inc.UnacknowledgedConnections)
 	connections.WithLabelValues("rejected", inc.SNI).Add(inc.RejectedConnections)
+	connections.WithLabelValues("rejected_by_client", inc.SNI).Add(inc.RejectedConnectionsByClient)
 	packets.WithLabelValues("orphan", inc.SNI).Add(inc.OrphanPackets)
 }
 
