@@ -373,7 +373,8 @@ const (
 	SYN_RECEIVED connState = iota
 	SYNACK_RECEIVED
 	SNI_RECEIVED
-	RST_RECEIVED
+	RST_SENT_BY_CLIENT
+	RST_SENT_BY_SERVER
 	FIN_RECEIVED
 )
 
@@ -501,11 +502,4 @@ func flagsString(flags byte) string {
 		}
 	}
 	return fmt.Sprintf("[%s]", strings.Join(r, ""))
-}
-
-// Converts a big endian representation of an IP address to a net.IP.
-func int2ip(nn uint32) net.IP {
-	ip := make(net.IP, 4)
-	binary.LittleEndian.PutUint32(ip, nn)
-	return ip
 }

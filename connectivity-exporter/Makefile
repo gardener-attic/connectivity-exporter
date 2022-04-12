@@ -39,6 +39,17 @@ helm/install:
 		--set-string image.name=$(IMAGE_NAME) \
 		--set-string image.tag=$(IMAGE_TAG)
 
+.PHONY: helm/install/values
+helm/install/values:
+	helm template \
+		connectivity-monitor ../charts/connectivity-monitor \
+		--create-namespace \
+		--namespace connectivity-monitor \
+		--values ../charts/connectivity-monitor/custom-values.yaml \
+		--set-string image.registry=$(REGISTRY) \
+		--set-string image.name=$(IMAGE_NAME) \
+		--set-string image.tag=$(IMAGE_TAG)
+
 .PHONY: helm/uninstall
 helm/uninstall:
 	helm uninstall \

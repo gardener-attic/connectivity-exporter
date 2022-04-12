@@ -299,11 +299,18 @@ func (s *State) accountForConnections(
 			inc.SuccessfulConnections++
 		}
 
-		if state == RST_RECEIVED {
+		if state == RST_SENT_BY_SERVER {
 			activeFailedSecond = true
 			inc.RejectedConnections++
 		}
+
+		if state == RST_SENT_BY_CLIENT {
+			inc.RejectedConnectionsByClient++
+		}
 	}
+
+	inc.SuccessfulConnections += float64(succeeded_connections)
+	inc.RejectedConnections += float64(failed_connections)
 
 	if len(staleConnMapInfo) > 0 || succeeded_connections > 0 || failed_connections > 0 {
 		activeSecond = true

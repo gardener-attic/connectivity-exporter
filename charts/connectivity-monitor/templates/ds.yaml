@@ -33,6 +33,11 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
 
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
+    {{- end }}
+
       containers:
 
       - name: connectivity-exporter

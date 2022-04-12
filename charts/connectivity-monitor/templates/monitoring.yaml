@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
@@ -12,6 +16,7 @@ spec:
     - {{ .Release.Namespace }}
   podMetricsEndpoints:
   - port: metrics
+    interval: 10s
   selector:
     matchLabels:
       app: connectivity-exporter

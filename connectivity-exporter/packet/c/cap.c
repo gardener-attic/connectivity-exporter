@@ -137,10 +137,10 @@ static inline void add_connection_to_stats(struct tuple_key_t *key, char *sni_st
       successful_connection ? 0 : 1
     };
     bpf_map_update_elem(inner_map, sni_string, &new_stats, BPF_ANY);
-
-    // Only delete the connection if it was accounted for in the stats
-    bpf_map_delete_elem(&connections, key);
   }
+
+  // Always delete the connection after it has been counted.
+  bpf_map_delete_elem(&connections, key);
 }
 
 // Parses the provided SKB at the given offset for SNI information. If parsing
@@ -391,12 +391,12 @@ int capture_packets_internal(struct __sk_buff *skb)
 
   if (tcph.rst) {
     if (server_to_client) { // Server RST
-      conn->state = RST_RECEIVED;
+      conn->state = RST_SENT_BY_SERVER;
       // Server RST could indicate server unavailability. Therefore, treat
       // the connection as failed.
       add_connection_to_stats(&key, conn->sni, false);
     } else { // Client RST
-      conn->state = RST_RECEIVED;
+      conn->state = RST_SENT_BY_CLIENT;
       // Client RST does not indicate server unavailability. Therefore, treat
       // the connection as successful.
       add_connection_to_stats(&key, conn->sni, true);

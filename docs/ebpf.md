@@ -71,7 +71,8 @@ struct tuple_data_t {
         SYN_RECEIVED,
         SYNACK_RECEIVED,
         SNI_RECEIVED,
-        RST_RECEIVED, \
+        RST_SENT_BY_CLIENT,
+        RST_SENT_BY_SERVER,
         FIN_RECEIVED
     })
     SNI (string)

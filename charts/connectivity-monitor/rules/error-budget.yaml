@@ -1,0 +1,166 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+groups:
+
+- name: error_budget
+  interval: 10s
+  rules:
+
+  - record: interval
+    expr: prometheus_rule_group_interval_seconds{rule_group=~".+;error_budget"}
+
+  - record: service:sli_seconds
+    expr: |
+      max by (sni) (
+        clamp_max(
+          rate(connectivity_exporter_seconds_total{kind="failed"}[1m]) * scalar(interval),
+          scalar(interval)
+        )
+      )
+    labels:
+      kind: failed
+
+  - record: service:sli_seconds
+    expr: |
+      max by (sni) (
+        clamp_max(
+          rate(connectivity_exporter_seconds_total{kind="active_failed"}[1m]) * scalar(interval),
+          scalar(interval)
+        )
+      )
+    labels:
+      kind: active_failed
+
+  - record: service:sli_seconds:3m
+    expr: |
+      service:sli_seconds
+      + ignoring(threemin) group_right
+      count_values without() ("threemin",
+        floor(
+          timestamp(
+            service:sli_seconds
+          ) / 60 / 3
+        )
+      ) * 0
+
+  - record: service:sli_seconds:hour
+    expr: |
+      service:sli_seconds
+      + ignoring(hour) group_right
+      count_values without() ("hour",
+        floor(
+          timestamp(
+            service:sli_seconds
+          ) / 60 / 60
+        )
+      ) * 0
+
+  - record: service:sli_seconds:day
+    expr: |
+      service:sli_seconds
+      + ignoring(day) group_right
+      count_values without() ("day",
+        floor(
+          timestamp(
+            service:sli_seconds
+          ) / 60 / 60 / 24
+        )
+      ) * 0
+
+  - record: service:sli_seconds:week
+    expr: |
+      service:sli_seconds
+      + ignoring(week) group_right
+      count_values without() ("week",
+        floor(
+          timestamp(
+            service:sli_seconds
+          ) / 60 / 60 / 24 / 7
+        )
+      ) * 0
+
+  - record: service:sli_seconds:calendarmonth
+    expr: |
+      service:sli_seconds
+      + ignoring(year, month) group_right
+      count_values without() ("year",
+        year(timestamp(
+          count_values without() ("month",
+            month(timestamp(
+              service:sli_seconds
+            ))
+          )
+        ))
+      ) * 0
+
+  - record: service:sli_seconds:time
+    expr: |
+      service:sli_seconds:3m or
+      service:sli_seconds:hour or
+      service:sli_seconds:day or
+      service:sli_seconds:week or
+      service:sli_seconds:calendarmonth
+
+
+  - record: service:sli_seconds:total
+    expr: |
+      service:sli_seconds:time
+      +
+      (
+        max_over_time(
+          service:sli_seconds:total[10m]
+        )
+        or
+        service:sli_seconds:time * 0
+      )
+
+  - record: service:sli_seconds:total:percent
+    labels:
+      term: threemin
+    expr: |
+      sum without(threemin) (
+        service:sli_seconds:total{threemin!=""}
+      )
+      / 60 / 3
+
+  - record: service:sli_seconds:total:percent
+    labels:
+      term: day
+    expr: |
+      sum without(day) (
+        service:sli_seconds:total{day!=""}
+      )
+      / 60 / 60 / 24
+
+  - record: service:sli_seconds:total:percent
+    labels:
+      term: hour
+    expr: |
+      sum without(hour) (
+        service:sli_seconds:total{hour!=""}
+      )
+      / 60 / 60
+
+  - record: service:sli_seconds:total:percent
+    labels:
+      term: week
+    expr: |
+      sum without(week) (
+        service:sli_seconds:total{week!=""}
+      )
+      / 60 / 60 / 24 / 7
+
+  - record: service:sli_seconds:total:percent
+    labels:
+      term: calendarmonth
+    expr: |
+      sum without(year, month) (
+        service:sli_seconds:total{year!="", month!=""}
+      )
+      / 60 / 60 / 24
+      / days_in_month(timestamp(
+        sum without(year, month)
+          (service:sli_seconds:total{year!="", month!=""})
+      ))
