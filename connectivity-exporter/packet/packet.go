@@ -309,6 +309,9 @@ func (s *State) accountForConnections(
 		}
 	}
 
+	inc.SuccessfulConnections += float64(succeeded_connections)
+	inc.RejectedConnections += float64(failed_connections)
+
 	if len(staleConnMapInfo) > 0 || succeeded_connections > 0 || failed_connections > 0 {
 		activeSecond = true
 	}
