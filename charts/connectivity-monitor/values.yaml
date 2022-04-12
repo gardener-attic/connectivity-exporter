@@ -12,6 +12,12 @@ image:
   tag: test
   pullPolicy: Always
 
+tolerations: []
+# - key: "key"
+#   operator: "Equal"
+#   value: "value"
+#   effect: "NoSchedule"
+
 metrics:
   host: ""
   port: "19101"
