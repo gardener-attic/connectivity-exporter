@@ -118,6 +118,12 @@ jobs:
       run: |
         make -C connectivity-exporter
 
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: latest
+        working-directory: connectivity-exporter
+
     - name: Test
       run: |
         make -C connectivity-exporter test
