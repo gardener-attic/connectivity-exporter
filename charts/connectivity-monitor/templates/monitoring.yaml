@@ -17,6 +17,9 @@ spec:
   podMetricsEndpoints:
   - port: metrics
     interval: 10s
+    relabelings:
+    - sourceLabels: [__meta_kubernetes_pod_node_name]
+      targetLabel: node
   selector:
     matchLabels:
       app: connectivity-exporter
