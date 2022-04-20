@@ -41,7 +41,7 @@ helm/install:
 
 .PHONY: helm/install/values
 helm/install/values:
-	helm template \
+	helm upgrade --install \
 		connectivity-monitor ../charts/connectivity-monitor \
 		--create-namespace \
 		--namespace connectivity-monitor \
