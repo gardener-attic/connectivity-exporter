@@ -5,6 +5,8 @@
 package metrics
 
 import (
+	"time"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 
@@ -22,11 +24,18 @@ type Inc struct {
 	RejectedConnections,
 	RejectedConnectionsByClient,
 	OrphanPackets float64
-	SNI string
+	SNI *SNI
+}
+
+type SNI struct {
+	refreshTTL chan interface{}
+	name       string
+	Expired    bool
 }
 
 const (
-	namespace = "connectivity_exporter"
+	TTL       time.Duration = time.Minute * 5
+	namespace               = "connectivity_exporter"
 )
 
 var (

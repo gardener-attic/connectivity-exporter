@@ -115,9 +115,9 @@ check-clean-work-tree:
 test: bpf
 ifneq ($(shell id -u),0)
 	$(warning ***Root privileges are required for executing BPF-related tests***)
-	sudo $(shell which go) test -tags testing -v ./... -count=1
+	sudo $(shell which go) test -tags testing -timeout 30s -v ./... -count=1
 else
-	go test -tags testing -v ./... -count=1
+	go test -tags testing -timeout 30s -v ./... -count=1
 endif
 
 .PHONY: benchmark
