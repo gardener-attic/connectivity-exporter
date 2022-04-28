@@ -22,6 +22,9 @@ metrics:
   host: ""
   port: "19101"
 
+filteredIPs: "0.0.0.0/0"
+filteredPorts: "443,6443"
+
 kubePrometheusStackConfig:
   release: kube-prometheus-stack
   enabled: true

@@ -10,8 +10,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {app: connectivity-exporter}
 data:
-  filtered-ports: "443,6443"
-  filtered-ips: "0.0.0.0/0"
+  filtered-ips: {{ .Values.filteredIPs }}
+  filtered-ports: {{ .Values.filteredPorts }}
 ---
 apiVersion: apps/v1
 kind: DaemonSet
