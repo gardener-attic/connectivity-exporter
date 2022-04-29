@@ -45,7 +45,9 @@ helm/install/values:
 		connectivity-monitor ../charts/connectivity-monitor \
 		--create-namespace \
 		--namespace connectivity-monitor \
+		--values ../charts/connectivity-monitor/values.yaml \
 		--values ../charts/connectivity-monitor/custom-values.yaml \
+		--set-string filteredPorts=$(shell ../bin/node-port.sh)
 		--set-string image.registry=$(REGISTRY) \
 		--set-string image.name=$(IMAGE_NAME) \
 		--set-string image.tag=$(IMAGE_TAG)
