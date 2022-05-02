@@ -164,3 +164,9 @@ groups:
         sum without(year, month)
           (service:sli_seconds:total{year!="", month!=""})
       ))
+
+  - record: service:term
+    expr: count by (term) (service:sli_seconds:total:percent) * 0
+
+  - record: service:sni
+    expr: count by (sni) (service:sli_seconds:total:percent) * 0
