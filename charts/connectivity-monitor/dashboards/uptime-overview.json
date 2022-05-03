@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 4,
-  "iteration": 1649854994331,
+  "id": 1,
+  "iteration": 1651583605530,
   "links": [],
   "panels": [
     {
@@ -468,7 +468,7 @@
           "value": "week"
         },
         "datasource": null,
-        "definition": "label_values(service:in, in)",
+        "definition": "label_values(downtime:in, in)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -478,7 +478,7 @@
         "name": "in",
         "options": [],
         "query": {
-          "query": "label_values(service:in, in)",
+          "query": "label_values(downtime:in, in)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
