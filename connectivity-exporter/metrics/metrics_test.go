@@ -13,15 +13,12 @@ func TestSNI(t *testing.T) {
 	defer resetMetrics()
 	sni := "test.sni"
 	inc := &Inc{
-		AllSeconds:                  1,
 		ActiveSeconds:               1,
 		FailedSeconds:               1,
 		ActiveFailedSeconds:         1,
 		SuccessfulConnections:       2,
-		UnacknowledgedConnections:   0,
 		RejectedConnections:         5,
 		RejectedConnectionsByClient: 1,
-		OrphanPackets:               1,
 		SNI:                         NewSNI(sni),
 	}
 	inc.SNI.StartTTL(&RealTimer{
@@ -37,7 +34,6 @@ func TestSNI(t *testing.T) {
 	secondsExpected := `
 		connectivity_exporter_seconds_total{kind="active",sni="test.sni"} 1
 		connectivity_exporter_seconds_total{kind="active_failed",sni="test.sni"} 1
-		connectivity_exporter_seconds_total{kind="clock",sni="test.sni"} 1
 		connectivity_exporter_seconds_total{kind="failed",sni="test.sni"} 1
 	`
 
@@ -54,23 +50,9 @@ func TestSNI(t *testing.T) {
 		connectivity_exporter_connections_total{kind="rejected",sni="test.sni"} 5
 		connectivity_exporter_connections_total{kind="rejected_by_client",sni="test.sni"} 1
 		connectivity_exporter_connections_total{kind="successful",sni="test.sni"} 2
-		connectivity_exporter_connections_total{kind="unacknowledged",sni="test.sni"} 0
 	`
 
 	if err := testutil.CollectAndCompare(connections, strings.NewReader(connectionsMetadata+connectionsExpected)); err != nil {
-		t.Errorf("unexpected collecting result:\n%s", err)
-	}
-
-	const packetsMetadata = `
-		# HELP connectivity_exporter_packets_total Total number of new packets.
-		# TYPE connectivity_exporter_packets_total counter
-	`
-
-	packetsExpected := `
-		connectivity_exporter_packets_total{kind="orphan",sni="test.sni"} 1
-	`
-
-	if err := testutil.CollectAndCompare(packets, strings.NewReader(packetsMetadata+packetsExpected)); err != nil {
 		t.Errorf("unexpected collecting result:\n%s", err)
 	}
 }
@@ -97,22 +79,19 @@ func TestTTL(t *testing.T) {
 	defer resetMetrics()
 	sni := "testsni"
 	inc := &Inc{
-		AllSeconds:                  1,
 		ActiveSeconds:               1,
 		FailedSeconds:               1,
 		ActiveFailedSeconds:         1,
 		SuccessfulConnections:       2,
-		UnacknowledgedConnections:   0,
 		RejectedConnections:         5,
 		RejectedConnectionsByClient: 1,
-		OrphanPackets:               1,
 		SNI:                         NewSNI(sni),
 	}
 
 	ch := make(chan time.Time)
 	wg := &sync.WaitGroup{}
 
-	go inc.SNI.StartTTL(&mockTimer{
+	inc.SNI.StartTTL(&mockTimer{
 		c:  ch,
 		wg: wg,
 	})
@@ -121,8 +100,8 @@ func TestTTL(t *testing.T) {
 
 	// Apply the increment and verify that the metrics got created
 	applyInc(inc)
-	if testutil.CollectAndCount(seconds) != 4 {
-		t.Errorf("Expected 4 metrics got: %d", testutil.CollectAndCount(seconds))
+	if testutil.CollectAndCount(seconds) != 3 {
+		t.Errorf("Expected 2 metrics got: %d", testutil.CollectAndCount(seconds))
 	}
 
 	// expire metrics
@@ -136,15 +115,12 @@ func TestTTL(t *testing.T) {
 
 	// SNI appears again after it has been expired
 	inc = &Inc{
-		AllSeconds:                  1,
 		ActiveSeconds:               1,
 		FailedSeconds:               1,
 		ActiveFailedSeconds:         1,
 		SuccessfulConnections:       2,
-		UnacknowledgedConnections:   0,
 		RejectedConnections:         5,
 		RejectedConnectionsByClient: 1,
-		OrphanPackets:               1,
 		SNI:                         NewSNI(sni),
 	}
 	inc.SNI.StartTTL(&mockTimer{
@@ -153,19 +129,18 @@ func TestTTL(t *testing.T) {
 	})
 
 	applyInc(inc)
-	if testutil.CollectAndCount(seconds) != 4 {
-		t.Errorf("Expected 4 metrics got: %d", testutil.CollectAndCount(seconds))
+	if testutil.CollectAndCount(seconds) != 3 {
+		t.Errorf("Expected 3 metrics got: %d", testutil.CollectAndCount(seconds))
 	}
 
 	// RefreshTTL should not affect the metrics
 	inc.SNI.refreshTTL <- nil
-	if testutil.CollectAndCount(seconds) != 4 {
-		t.Errorf("Expected 4 metrics got: %d", testutil.CollectAndCount(seconds))
+	if testutil.CollectAndCount(seconds) != 3 {
+		t.Errorf("Expected 3 metrics got: %d", testutil.CollectAndCount(seconds))
 	}
 }
 
 func resetMetrics() {
 	seconds.Reset()
 	connections.Reset()
-	packets.Reset()
 }

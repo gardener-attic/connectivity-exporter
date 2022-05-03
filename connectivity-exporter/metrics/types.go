@@ -16,15 +16,12 @@ import (
 
 // Inc is the increment of the counter metrics
 type Inc struct {
-	AllSeconds,
 	ActiveSeconds,
 	FailedSeconds,
 	ActiveFailedSeconds,
 	SuccessfulConnections,
-	UnacknowledgedConnections,
 	RejectedConnections,
-	RejectedConnectionsByClient,
-	OrphanPackets float64
+	RejectedConnectionsByClient float64
 	SNI *SNI
 }
 
@@ -55,14 +52,6 @@ var (
 			Namespace: namespace,
 			Name:      "connections_total",
 			Help:      "Total number of new connections.",
-		}, []string{"kind", "sni"},
-	)
-
-	packets = promauto.NewCounterVec(
-		prometheus.CounterOpts{
-			Namespace: namespace,
-			Name:      "packets_total",
-			Help:      "Total number of new packets.",
 		}, []string{"kind", "sni"},
 	)
 
