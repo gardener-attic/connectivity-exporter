@@ -12,3 +12,5 @@ FROM golang:1.16-alpine3.13
 COPY --from=builder /build/bin/connectivity-exporter /bin/connectivity-exporter
 
 CMD printf 'Example of command:\ndocker run --privileged --net=host -ti --rm ghcr.io/gardener/connectivity-monitor:test /bin/connectivity-exporter -r 0.0.0.0/0 -p 443,6443 -i wlp4s0\n'
+
+ENTRYPOINT [ "/bin/connectivity-exporter" ]
