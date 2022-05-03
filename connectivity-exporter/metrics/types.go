@@ -5,6 +5,7 @@
 package metrics
 
 import (
+	"sync"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -39,6 +40,8 @@ const (
 )
 
 var (
+	SNIMutex = sync.Mutex{}
+
 	seconds = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Namespace: namespace,

@@ -233,6 +233,8 @@ func (s *NetworkDataSource) TrackConnections(ctx context.Context, wg *sync.WaitG
 }
 
 func (s *State) deleteExpiredSNIs() {
+	metrics.SNIMutex.Lock()
+	defer metrics.SNIMutex.Unlock()
 	for name, sni := range s.snis {
 		if sni.Expired {
 			delete(s.snis, name)

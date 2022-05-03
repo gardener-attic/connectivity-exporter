@@ -57,7 +57,11 @@ func Apply(ctx context.Context, wg *sync.WaitGroup, incs <-chan *Inc, snapshots 
 }
 
 func applyInc(inc *Inc) {
-	inc.SNI.refreshTTL <- nil
+	select {
+	case inc.SNI.refreshTTL <- nil:
+	default:
+		klog.Infof("Dropped refresh signal for SNI: %s", inc.SNI.name)
+	}
 	seconds.WithLabelValues("clock", inc.SNI.name).Add(inc.AllSeconds)
 	seconds.WithLabelValues("active", inc.SNI.name).Add(inc.ActiveSeconds)
 	seconds.WithLabelValues("failed", inc.SNI.name).Add(inc.FailedSeconds)
@@ -118,7 +122,9 @@ func waitForTTL(t TTLTimer, sni *SNI) {
 			t.resetTimer()
 		case <-t.getChannel():
 			// The SNI is expired and should be removed from the SNIs map.
+			SNIMutex.Lock()
 			sni.Expired = true
+			SNIMutex.Unlock()
 			// The metrics for this SNI have existed longer than
 			// TTL and should no longer be exposed.
 			deleteMetrics(sni.name)
