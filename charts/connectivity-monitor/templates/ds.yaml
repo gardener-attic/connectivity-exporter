@@ -40,8 +40,8 @@ spec:
 
         securityContext: {capabilities: {add: [NET_ADMIN, SYS_RESOURCE, SYS_ADMIN]}}
         resources:
-          requests: {cpu: 200m, memory: 750Mi}
-          limits:   {cpu: 2, memory: 3Gi}
+          requests: {cpu: 20m, memory: 100Mi}
+          limits:   {cpu: 100m, memory: 200Mi}
         ports: [{name: metrics, containerPort: {{ .Values.metrics.port }}}]
         readinessProbe:
           tcpSocket:
