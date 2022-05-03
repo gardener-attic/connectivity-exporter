@@ -8,30 +8,15 @@ groups:
   interval: 10s
   rules:
 
-  - record: interval
-    expr: prometheus_rule_group_interval_seconds{rule_group=~".+;error_budget"}
-
   - record: service:sli_seconds
+    # The expression clamps by the rule evaluation interval
     expr: |
-      max by (sni) (
+      max by (sni, kind) (
         clamp_max(
-          rate(connectivity_exporter_seconds_total{kind="failed"}[1m]) * scalar(interval),
-          scalar(interval)
+          rate(connectivity_exporter_seconds_total{kind=~"failed|active_failed"}[1m]) * 10,
+          10
         )
       )
-    labels:
-      kind: failed
-
-  - record: service:sli_seconds
-    expr: |
-      max by (sni) (
-        clamp_max(
-          rate(connectivity_exporter_seconds_total{kind="active_failed"}[1m]) * scalar(interval),
-          scalar(interval)
-        )
-      )
-    labels:
-      kind: active_failed
 
   - record: service:sli_seconds:hour
     expr: |
