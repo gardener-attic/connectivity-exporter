@@ -35,7 +35,7 @@ type SNI struct {
 }
 
 const (
-	TTL       time.Duration = time.Minute * 5
+	TTL       time.Duration = time.Minute * 15
 	namespace               = "connectivity_exporter"
 )
 
