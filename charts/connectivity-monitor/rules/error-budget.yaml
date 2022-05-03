@@ -103,36 +103,36 @@ groups:
         service:sli_seconds:time * 0
       )
 
-  - record: service:sli_seconds:total:percent
+  - record: downtime
     labels:
-      term: day
-    expr: |
-      sum without(day) (
-        service:sli_seconds:total{day!=""}
-      )
-      / 60 / 60 / 24
-
-  - record: service:sli_seconds:total:percent
-    labels:
-      term: hour
+      in: hour
     expr: |
       sum without(hour) (
         service:sli_seconds:total{hour!=""}
       )
       / 60 / 60
 
-  - record: service:sli_seconds:total:percent
+  - record: downtime
     labels:
-      term: week
+      in: day
+    expr: |
+      sum without(day) (
+        service:sli_seconds:total{day!=""}
+      )
+      / 60 / 60 / 24
+
+  - record: downtime
+    labels:
+      in: week
     expr: |
       sum without(week) (
         service:sli_seconds:total{week!=""}
       )
       / 60 / 60 / 24 / 7
 
-  - record: service:sli_seconds:total:percent
+  - record: downtime
     labels:
-      term: calendarmonth
+      in: calendarmonth
     expr: |
       sum without(year, month) (
         service:sli_seconds:total{year!="", month!=""}
@@ -143,8 +143,8 @@ groups:
           (service:sli_seconds:total{year!="", month!=""})
       ))
 
-  - record: service:term
-    expr: count by (term) (service:sli_seconds:total:percent) * 0
+  - record: downtime:in
+    expr: count by (in) (downtime) * 0
 
-  - record: service:sni
-    expr: count by (sni) (service:sli_seconds:total:percent) * 0
+  - record: downtime:sni
+    expr: count by (sni) (downtime) * 0

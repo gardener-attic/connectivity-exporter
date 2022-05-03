@@ -81,7 +81,7 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "(1-service:sli_seconds:total:percent{term=\"hour\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
+          "expr": "(1-downtime{in=\"hour\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "instant": true,
           "interval": "",
           "legendFormat": "",
@@ -156,7 +156,7 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "(1-service:sli_seconds:total:percent{term=\"day\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
+          "expr": "(1-downtime{in=\"day\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "instant": true,
           "interval": "",
           "legendFormat": "",
@@ -230,7 +230,7 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "(1-service:sli_seconds:total:percent{term=\"week\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
+          "expr": "(1-downtime{in=\"week\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "instant": true,
           "interval": "",
           "legendFormat": "",
@@ -304,7 +304,7 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "(1-service:sli_seconds:total:percent{term=\"calendarmonth\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
+          "expr": "(1-downtime{in=\"calendarmonth\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "instant": true,
           "interval": "",
           "legendFormat": "",
@@ -366,9 +366,9 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "(1-service:sli_seconds:total:percent{term=\"hour\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
+          "expr": "(1-downtime{in=\"hour\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "interval": "",
-          "legendFormat": "{{sni}}:{{term}}",
+          "legendFormat": "{{sni}}:{{in}}",
           "refId": "A"
         },
         {
@@ -492,9 +492,9 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "(1-service:sli_seconds:total:percent{term=\"day\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
+          "expr": "(1-downtime{in=\"day\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "interval": "",
-          "legendFormat": "{{sni}}:{{term}}",
+          "legendFormat": "{{sni}}:{{in}}",
           "refId": "A"
         },
         {
@@ -618,9 +618,9 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "(1-service:sli_seconds:total:percent{term=\"week\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
+          "expr": "(1-downtime{in=\"week\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "interval": "",
-          "legendFormat": "{{sni}}:{{term}}",
+          "legendFormat": "{{sni}}:{{in}}",
           "refId": "A"
         },
         {
@@ -744,9 +744,9 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "(1-service:sli_seconds:total:percent{term=\"calendarmonth\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
+          "expr": "(1-downtime{in=\"calendarmonth\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "interval": "",
-          "legendFormat": "{{sni}}:{{term}}",
+          "legendFormat": "{{sni}}:{{in}}",
           "refId": "A"
         },
         {
@@ -884,9 +884,9 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "(1-service:sli_seconds:total:percent{term=\"day\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
+          "expr": "(1-downtime{in=\"day\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "interval": "",
-          "legendFormat": "{{sni}}:{{term}}",
+          "legendFormat": "{{sni}}:{{in}}",
           "refId": "A"
         },
         {
@@ -1090,7 +1090,7 @@
           "value": "api.aws-oot-control.mcm-ci.internal.dev.k8s.ondemand.com"
         },
         "datasource": null,
-        "definition": "label_values(service:sli_seconds:total:percent{}, sni)",
+        "definition": "label_values(downtime{}, sni)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -1100,7 +1100,7 @@
         "name": "sni",
         "options": [],
         "query": {
-          "query": "label_values(service:sli_seconds:total:percent{}, sni)",
+          "query": "label_values(downtime{}, sni)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
