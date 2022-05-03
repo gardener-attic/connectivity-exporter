@@ -16,48 +16,6 @@ docker/build:
 docker/push:
 	docker push $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG)
 
-.PHONY: helm/generate
-helm/generate:
-	helm template \
-		connectivity-monitor ../charts/connectivity-monitor \
-		--output-dir bin/ \
-		--create-namespace \
-		--namespace connectivity-monitor \
-		--values ../charts/connectivity-monitor/values.yaml \
-		--set-string image.registry=$(REGISTRY) \
-		--set-string image.name=$(IMAGE_NAME) \
-		--set-string image.tag=$(IMAGE_TAG)
-
-.PHONY: helm/install
-helm/install:
-	helm upgrade --install \
-		connectivity-monitor ../charts/connectivity-monitor \
-		--create-namespace \
-		--namespace connectivity-monitor \
-		--values ../charts/connectivity-monitor/values.yaml \
-		--set-string image.registry=$(REGISTRY) \
-		--set-string image.name=$(IMAGE_NAME) \
-		--set-string image.tag=$(IMAGE_TAG)
-
-.PHONY: helm/install/values
-helm/install/values:
-	helm upgrade --install \
-		connectivity-monitor ../charts/connectivity-monitor \
-		--create-namespace \
-		--namespace connectivity-monitor \
-		--values ../charts/connectivity-monitor/values.yaml \
-		--values ../charts/connectivity-monitor/custom-values.yaml \
-		--set-string filteredPorts=$(shell ../bin/node-port.sh) \
-		--set-string image.registry=$(REGISTRY) \
-		--set-string image.name=$(IMAGE_NAME) \
-		--set-string image.tag=$(IMAGE_TAG)
-
-.PHONY: helm/uninstall
-helm/uninstall:
-	helm uninstall \
-		connectivity-monitor \
-		--namespace connectivity-monitor
-
 CLANG_OS_FLAGS = ""
 
 ifeq ($(shell lsb_release -si 2>/dev/null), Ubuntu)
