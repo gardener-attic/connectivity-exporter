@@ -11,7 +11,7 @@ helm repo update
 
 helm upgrade --install \
              --values values.yaml \
-             --version 30.0.1 \
+             --version 35.0.3 \
              --create-namespace \
              --namespace monitoring \
              kube-prometheus-stack \

@@ -13,7 +13,7 @@ Files:
   **/.gitignore
   **/go.mod
   **/go.sum
-  var/lib/grafana/dashboards/*.json
+  charts/connectivity-monitor/dashboards/*.json
 Copyright: 2021 SAP SE or an SAP affiliate company and Gardener contributors
 License: Apache-2.0
 

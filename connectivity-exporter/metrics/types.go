@@ -16,15 +16,12 @@ import (
 
 // Inc is the increment of the counter metrics
 type Inc struct {
-	AllSeconds,
 	ActiveSeconds,
 	FailedSeconds,
 	ActiveFailedSeconds,
 	SuccessfulConnections,
-	UnacknowledgedConnections,
 	RejectedConnections,
-	RejectedConnectionsByClient,
-	OrphanPackets float64
+	RejectedConnectionsByClient float64
 	SNI *SNI
 }
 
@@ -58,15 +55,8 @@ var (
 		}, []string{"kind", "sni"},
 	)
 
-	packets = promauto.NewCounterVec(
-		prometheus.CounterOpts{
-			Namespace: namespace,
-			Name:      "packets_total",
-			Help:      "Total number of new packets.",
-		}, []string{"kind", "sni"},
-	)
-
-	execution = promextra.NewPrecomputedHistogramAuto(
+	// Use promextra.NewPrecomputedHistogramAuto to register the metric
+	execution = promextra.NewPrecomputedHistogram(
 		prometheus.HistogramOpts{
 			Namespace: namespace,
 			Name:      "bpf_execution",
@@ -79,6 +69,5 @@ var (
 				31,
 			),
 		},
-		nil,
 	)
 )

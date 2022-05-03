@@ -62,15 +62,12 @@ func applyInc(inc *Inc) {
 	default:
 		klog.Infof("Dropped refresh signal for SNI: %s", inc.SNI.name)
 	}
-	seconds.WithLabelValues("clock", inc.SNI.name).Add(inc.AllSeconds)
 	seconds.WithLabelValues("active", inc.SNI.name).Add(inc.ActiveSeconds)
 	seconds.WithLabelValues("failed", inc.SNI.name).Add(inc.FailedSeconds)
 	seconds.WithLabelValues("active_failed", inc.SNI.name).Add(inc.ActiveFailedSeconds)
 	connections.WithLabelValues("successful", inc.SNI.name).Add(inc.SuccessfulConnections)
-	connections.WithLabelValues("unacknowledged", inc.SNI.name).Add(inc.UnacknowledgedConnections)
 	connections.WithLabelValues("rejected", inc.SNI.name).Add(inc.RejectedConnections)
 	connections.WithLabelValues("rejected_by_client", inc.SNI.name).Add(inc.RejectedConnectionsByClient)
-	packets.WithLabelValues("orphan", inc.SNI.name).Add(inc.OrphanPackets)
 }
 
 func applySnapshot(snapshot promextra.Snapshot) {
@@ -134,13 +131,10 @@ func waitForTTL(t TTLTimer, sni *SNI) {
 }
 
 func deleteMetrics(sni string) {
-	seconds.DeleteLabelValues("clock", sni)
 	seconds.DeleteLabelValues("active", sni)
 	seconds.DeleteLabelValues("failed", sni)
 	seconds.DeleteLabelValues("active_failed", sni)
 	connections.DeleteLabelValues("successful", sni)
-	connections.DeleteLabelValues("unacknowledged", sni)
 	connections.DeleteLabelValues("rejected", sni)
 	connections.DeleteLabelValues("rejected_by_client", sni)
-	packets.DeleteLabelValues("orphan", sni)
 }

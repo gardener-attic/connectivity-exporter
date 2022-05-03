@@ -16,48 +16,6 @@ docker/build:
 docker/push:
 	docker push $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG)
 
-.PHONY: helm/generate
-helm/generate:
-	helm template \
-		connectivity-monitor ../charts/connectivity-monitor \
-		--output-dir bin/ \
-		--create-namespace \
-		--namespace connectivity-monitor \
-		--values ../charts/connectivity-monitor/values.yaml \
-		--set-string image.registry=$(REGISTRY) \
-		--set-string image.name=$(IMAGE_NAME) \
-		--set-string image.tag=$(IMAGE_TAG)
-
-.PHONY: helm/install
-helm/install:
-	helm upgrade --install \
-		connectivity-monitor ../charts/connectivity-monitor \
-		--create-namespace \
-		--namespace connectivity-monitor \
-		--values ../charts/connectivity-monitor/values.yaml \
-		--set-string image.registry=$(REGISTRY) \
-		--set-string image.name=$(IMAGE_NAME) \
-		--set-string image.tag=$(IMAGE_TAG)
-
-.PHONY: helm/install/values
-helm/install/values:
-	helm upgrade --install \
-		connectivity-monitor ../charts/connectivity-monitor \
-		--create-namespace \
-		--namespace connectivity-monitor \
-		--values ../charts/connectivity-monitor/values.yaml \
-		--values ../charts/connectivity-monitor/custom-values.yaml \
-		--set-string filteredPorts=$(shell ../bin/node-port.sh) \
-		--set-string image.registry=$(REGISTRY) \
-		--set-string image.name=$(IMAGE_NAME) \
-		--set-string image.tag=$(IMAGE_TAG)
-
-.PHONY: helm/uninstall
-helm/uninstall:
-	helm uninstall \
-		connectivity-monitor \
-		--namespace connectivity-monitor
-
 CLANG_OS_FLAGS = ""
 
 ifeq ($(shell lsb_release -si 2>/dev/null), Ubuntu)
@@ -72,44 +30,6 @@ build: bpf
 bpf:
 	clang $(CLANG_OS_FLAGS) -target bpf -O2 -g -c -x c packet/c/cap.c -o packet/c/cap.o
 	clang $(CLANG_OS_FLAGS) -target bpf -O2 -g -c -x c packet/c/cap.c -o packet/c/cap-testing.o -DTEST_ENABLED=1
-
-BUILT_TOOLS_DIR := $(abspath ./.built-tools)
-TOOLS_MOD_DIR := ./internal/tools
-BUILT_TOOLS_DEPS := $(TOOLS_MOD_DIR)/go.mod $(TOOLS_MOD_DIR)/go.sum $(TOOLS_MOD_DIR)/tools.go
-GOLANGCI_LINT := $(BUILT_TOOLS_DIR)/golangci-lint
-
-$(BUILT_TOOLS_DIR):
-	@mkdir -p $(BUILT_TOOLS_DIR)
-
-$(BUILT_TOOLS_DIR)/golangci-lint: $(BUILT_TOOLS_DEPS) | $(BUILT_TOOLS_DIR)
-	cd $(TOOLS_MOD_DIR); \
-	go build -o $@ github.com/golangci/golangci-lint/cmd/golangci-lint
-
-.PHONY: lint
-lint: $(GOLANGCI_LINT)
-	$(GOLANGCI_LINT) run --fix
-	$(GOLANGCI_LINT) run
-
-.PHONY: tidy
-tidy:
-	set -e; \
-	for mod in . $(TOOLS_MOD_DIR); do \
-	  (cd "$${mod}" && go mod tidy); \
-	done
-
-.PHONY: sync-base-image
-sync-base-image:
-	./base-image/update-go-files.sh
-
-.PHONY: check-clean-work-tree
-check-clean-work-tree:
-	@if ! git diff --quiet; then \
-	  echo; \
-	  echo 'Working tree is not clean.'; \
-	  echo; \
-	  git status; \
-	  exit 1; \
-	fi
 
 .PHONY: test
 test: bpf
@@ -128,7 +48,3 @@ ifneq ($(shell id -u),0)
 else
 	go test -run=$^ -bench=. ./...
 endif
-
-.PHONY: clean
-clean:
-	rm -rf connectivity-exporter packet/c/cap.o $(BUILT_TOOLS_DIR)

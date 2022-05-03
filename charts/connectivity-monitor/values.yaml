@@ -9,7 +9,7 @@
 image:
   registry: ghcr.io
   name: gardener/connectivity-monitor
-  tag: test
+  tag: main
   pullPolicy: Always
 
 tolerations: []
@@ -23,7 +23,7 @@ metrics:
   port: "19101"
 
 filteredIPs: "0.0.0.0/0"
-filteredPorts: "443,6443"
+filteredPorts: "443"
 
 kubePrometheusStackConfig:
   release: kube-prometheus-stack

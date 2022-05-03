@@ -66,7 +66,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "count(count(service:sli_seconds:total:percent{}) by (sni))",
+          "expr": "count(count(downtime{}) by (sni))",
           "instant": true,
           "interval": "",
           "legendFormat": "",
@@ -123,14 +123,14 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "count(((1-service:sli_seconds:total:percent{term=~\"$term\",kind=\"active_failed\"})*100) > 99.95)",
+          "expr": "count(((1-downtime{in=~\"$in\",kind=\"active_failed\"})*100) > 99.95)",
           "instant": true,
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "title": "SNIs within Error Budget ($term)",
+      "title": "SNIs within Error Budget ($in)",
       "type": "stat"
     },
     {
@@ -180,14 +180,14 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "count(((1-service:sli_seconds:total:percent{term=~\"$term\",kind=\"active_failed\"})*100) < 99.95)",
+          "expr": "count(((1-downtime{in=~\"$in\",kind=\"active_failed\"})*100) < 99.95)",
           "instant": true,
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "title": "SNIs exceeding Error Budget ($term)",
+      "title": "SNIs exceeding Error Budget ($in)",
       "type": "stat"
     },
     {
@@ -295,7 +295,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "(1 - topk(10,service:sli_seconds:total:percent{term=~\"$term\", kind=\"active_failed\"})) * 100",
+          "expr": "(1 - topk(10,downtime{in=~\"$in\", kind=\"active_failed\"})) * 100",
           "instant": true,
           "interval": "",
           "legendFormat": "{{sni}}",
@@ -427,7 +427,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "topk(10,((1-service:sli_seconds:total:percent{term=~\"$term\", kind=\"active_failed\"}) * 100) < 100)",
+          "expr": "topk(10,((1-downtime{in=~\"$in\", kind=\"active_failed\"}) * 100) < 100)",
           "instant": true,
           "interval": "",
           "legendFormat": "{{sni}}",
@@ -468,17 +468,17 @@
           "value": "week"
         },
         "datasource": null,
-        "definition": "label_values(service:term, term)",
+        "definition": "label_values(service:in, in)",
         "description": null,
         "error": null,
         "hide": 0,
         "includeAll": false,
         "label": null,
         "multi": false,
-        "name": "term",
+        "name": "in",
         "options": [],
         "query": {
-          "query": "label_values(service:term, term)",
+          "query": "label_values(service:in, in)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,

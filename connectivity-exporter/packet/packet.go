@@ -30,8 +30,7 @@ type NetworkDataSource struct {
 }
 
 type State struct {
-	orphanPackets float64
-	snis          map[string]*metrics.SNI
+	snis map[string]*metrics.SNI
 }
 
 // NewNetworkDataSource creates a new network data source based on
@@ -301,7 +300,7 @@ func (s *State) accountForConnections(
 			Timer: time.NewTimer(metrics.TTL),
 		})
 	}
-	inc := &metrics.Inc{AllSeconds: 1, OrphanPackets: s.orphanPackets, SNI: s.snis[sni]} // TODO: check: orphan packets should be counter -> do not set to current value
+	inc := &metrics.Inc{SNI: s.snis[sni]}
 
 	klog.Infof("sni: %s, connections: %d", sni, len(staleConnMapInfo))
 	var activeSecond, activeFailedSecond bool
@@ -312,7 +311,6 @@ func (s *State) accountForConnections(
 		// note: TCP FIN state is ambiguous, rejection depends on who sent the RST packet
 		if state == SYN_RECEIVED || state == SYNACK_RECEIVED {
 			activeFailedSecond = true
-			inc.UnacknowledgedConnections++
 		}
 
 		if state == SNI_RECEIVED {
@@ -356,6 +354,5 @@ func (s *State) accountForConnections(
 		inc.FailedSeconds++
 	}
 
-	s.orphanPackets = 0
 	return inc, failedSecond
 }

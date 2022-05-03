@@ -117,9 +117,6 @@ Annotate time based on state of connections
 The connectivity-exporter assesses each connection attempt based on the packet
 sequence it observes in a certain time window:
 
-- unacknowledged connection:
-  `SYN` (packet sent to the api server), no acknowledgment received
-
 - rejected connection:
   `SYN` packet sent, `SYN+ACK` packet received, but e.g. during the TLS
   negotiation the server responds with an `RST+ACK` packet to abort the
@@ -137,15 +134,10 @@ offset, to tolerate late arrivals and avoid issues at second boundaries:
   inactive if there were no new connection attempts,
 
 - failed (/successful) second:
-  failed if there was at least one failed connection attempt (unacknowledged or
-  rejected), or
+  failed if there was at least one failed connection attempt (rejected), or
   if there were no connection attempts and the preceding bucket was assessed as
   failed;
   successful otherwise.
-
-If packets arrive too late (beyond a certain time window) or simply out of
-sequence (e.g. a `SYN+ACK` packet without a preceding `SYN` packet on the same
-connection), they are counted as an orphan packet.
 
 Prometheus metrics
 ------------------
@@ -158,17 +150,11 @@ metrics, which can be comfortably scraped without losing the 1s granularity.
 # TYPE connectivity_exporter_connections_total counter
 connectivity_exporter_connections_total{kind="rejected"} 0
 connectivity_exporter_connections_total{kind="successful"} 544
-connectivity_exporter_connections_total{kind="unacknowledged"} 0
-
-# HELP connectivity_exporter_packets_total Total number of new packets.
-# TYPE connectivity_exporter_packets_total counter
-connectivity_exporter_packets_total{kind="orphan"} 0
 
 # HELP connectivity_exporter_seconds_total Total number of seconds.
 # TYPE connectivity_exporter_seconds_total counter
 connectivity_exporter_seconds_total{kind="active"} 337
 connectivity_exporter_seconds_total{kind="active_failed"} 0
-connectivity_exporter_seconds_total{kind="clock"} 2354
 connectivity_exporter_seconds_total{kind="failed"} 0
 ```
 
