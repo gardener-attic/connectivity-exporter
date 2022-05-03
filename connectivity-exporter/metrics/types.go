@@ -55,7 +55,8 @@ var (
 		}, []string{"kind", "sni"},
 	)
 
-	execution = promextra.NewPrecomputedHistogramAuto(
+	// Use promextra.NewPrecomputedHistogramAuto to register the metric
+	execution = promextra.NewPrecomputedHistogram(
 		prometheus.HistogramOpts{
 			Namespace: namespace,
 			Name:      "bpf_execution",
@@ -68,6 +69,5 @@ var (
 				31,
 			),
 		},
-		nil,
 	)
 )
