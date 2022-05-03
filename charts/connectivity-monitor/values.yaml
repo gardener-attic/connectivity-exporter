@@ -9,7 +9,7 @@
 image:
   registry: ghcr.io
   name: gardener/connectivity-monitor
-  tag: test
+  tag: main
   pullPolicy: Always
 
 tolerations: []
