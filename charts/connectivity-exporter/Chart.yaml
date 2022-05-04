@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2021 SAP SE or an SAP affiliate company and Gardener contributors
+#
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: v2
+name: connectivity-exporter
+description: A Helm chart for Kubernetes
+
+type: application
+
+version: 0.1.0
+appVersion: "0.1.0"

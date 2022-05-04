@@ -7,9 +7,9 @@
 cd "$(dirname "$(realpath "$0")")" || exit 1
 
 helm upgrade --install \
-  connectivity-monitor ../../charts/connectivity-monitor \
+  connectivity-exporter ../../charts/connectivity-exporter \
   --create-namespace \
-  --namespace connectivity-monitor \
-  --values ../../charts/connectivity-monitor/values.yaml \
+  --namespace connectivity-exporter \
+  --values ../../charts/connectivity-exporter/values.yaml \
   --values gardener-values.yaml \
-  --set-string filteredPorts=$(./node-port.sh)
+  --set-string filteredPorts="$(./node-port.sh)"

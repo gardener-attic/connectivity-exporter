@@ -5,5 +5,5 @@
 # SPDX-License-Identifier: Apache-2.0
 
 helm uninstall \
-  connectivity-monitor \
-  --namespace connectivity-monitor
+  connectivity-exporter \
+  --namespace connectivity-exporter
