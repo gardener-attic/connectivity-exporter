@@ -16,8 +16,6 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 11,
-  "iteration": 1651224934024,
   "links": [],
   "panels": [
     {
@@ -1124,6 +1122,5 @@
   },
   "timezone": "utc",
   "title": "Uptime",
-  "uid": "uptime",
-  "version": 1
+  "uid": "uptime"
 }
