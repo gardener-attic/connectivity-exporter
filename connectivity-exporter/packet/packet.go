@@ -302,7 +302,7 @@ func (s *State) accountForConnections(
 	}
 	inc := &metrics.Inc{SNI: s.snis[sni]}
 
-	klog.Infof("sni: %s, connections: %d", sni, len(staleConnMapInfo))
+	klog.V(2).Infof("sni: %s, connections: %d", sni, len(staleConnMapInfo))
 	var activeSecond, activeFailedSecond bool
 
 	for _, v := range staleConnMapInfo {
