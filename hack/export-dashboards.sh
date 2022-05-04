@@ -6,7 +6,9 @@
 
 cd "$(dirname "$(realpath "$0")")/.." || exit 1
 
-curl -s "localhost:3000/api/search?type=dash-db" \
+AUTH=$(echo "YWRtaW46cHJvbS1vcGVyYXRvcgo=" | base64 -d)
+
+curl -s -u "$AUTH" "localhost:3000/api/search?type=dash-db" \
 | jq -r '.[]
          | [ .uid,
             (.title              | ascii_downcase | gsub(" "; "-")),
@@ -14,10 +16,10 @@ curl -s "localhost:3000/api/search?type=dash-db" \
          | join(" ")' \
 | while read -r uid new_uid folder; do
     echo "Exporting dashboard with uid '$uid' (new uid: '$new_uid') in folder '$folder'"
-    mkdir -p var/lib/grafana/dashboards/"$folder"
-    curl -s "http://localhost:3000/api/dashboards/uid/$uid" \
+    mkdir -p charts/connectivity-exporter/dashboards/"$folder"
+    curl -s -u "$AUTH" "http://localhost:3000/api/dashboards/uid/$uid" \
     | jq ".dashboard
           | .uid = \"$new_uid\"
           | del(.id, .iteration, .version)"                 \
-    > var/lib/grafana/dashboards/"$folder/$new_uid".json
+    > charts/connectivity-exporter/dashboards/"$folder/$new_uid".json
   done
