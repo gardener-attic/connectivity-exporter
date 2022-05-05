@@ -30,7 +30,7 @@ type NetworkDataSource struct {
 }
 
 type State struct {
-	snis map[string]*metrics.SNI
+	snis map[string]time.Time
 }
 
 // NewNetworkDataSource creates a new network data source based on
@@ -217,7 +217,7 @@ func (s *NetworkDataSource) TrackConnections(ctx context.Context, wg *sync.WaitG
 				incs <- inc
 			}
 
-			state.deleteExpiredSNIs()
+			state.deleteExpiredSNIs(time.Now())
 
 			// Update the counter to new value.
 			currentTickerClock++
@@ -231,19 +231,19 @@ func (s *NetworkDataSource) TrackConnections(ctx context.Context, wg *sync.WaitG
 	}
 }
 
-func (s *State) deleteExpiredSNIs() {
-	metrics.SNIMutex.Lock()
-	defer metrics.SNIMutex.Unlock()
-	for name, sni := range s.snis {
-		if sni.Expired {
+func (s *State) deleteExpiredSNIs(now time.Time) {
+	for name, lastUpdate := range s.snis {
+		// Expire metrics if the last update is older than the metric expiration
+		if lastUpdate.Add(metrics.Expiration).Before(now) {
 			delete(s.snis, name)
+			metrics.DeleteMetrics(name)
 		}
 	}
 }
 
 func newState() *State {
 	return &State{
-		snis: make(map[string]*metrics.SNI),
+		snis: make(map[string]time.Time),
 	}
 }
 
@@ -295,12 +295,9 @@ func (s *State) accountForConnections(
 		klog.Error("SNI is empty")
 	}
 	if _, ok := s.snis[sni]; !ok {
-		s.snis[sni] = metrics.NewSNI(sni)
-		s.snis[sni].StartTTL(&metrics.RealTimer{
-			Timer: time.NewTimer(metrics.TTL),
-		})
+		s.snis[sni] = time.Now()
 	}
-	inc := &metrics.Inc{SNI: s.snis[sni]}
+	inc := &metrics.Inc{SNI: sni}
 
 	klog.V(2).Infof("sni: %s, connections: %d", sni, len(staleConnMapInfo))
 	var activeSecond, activeFailedSecond bool

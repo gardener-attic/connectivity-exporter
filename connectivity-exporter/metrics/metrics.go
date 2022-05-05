@@ -8,7 +8,6 @@ import (
 	"context"
 	"net/http"
 	"sync"
-	"time"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"k8s.io/klog/v2"
@@ -49,25 +48,20 @@ func Apply(ctx context.Context, wg *sync.WaitGroup, incs <-chan *Inc, snapshots 
 		case <-done:
 			return
 		case inc := <-incs:
-			applyInc(inc)
+			inc.apply()
 		case snapshot := <-snapshots:
 			applySnapshot(snapshot)
 		}
 	}
 }
 
-func applyInc(inc *Inc) {
-	select {
-	case inc.SNI.refreshTTL <- nil:
-	default:
-		klog.Infof("Dropped refresh signal for SNI: %s", inc.SNI.name)
-	}
-	seconds.WithLabelValues("active", inc.SNI.name).Add(inc.ActiveSeconds)
-	seconds.WithLabelValues("failed", inc.SNI.name).Add(inc.FailedSeconds)
-	seconds.WithLabelValues("active_failed", inc.SNI.name).Add(inc.ActiveFailedSeconds)
-	connections.WithLabelValues("successful", inc.SNI.name).Add(inc.SuccessfulConnections)
-	connections.WithLabelValues("rejected", inc.SNI.name).Add(inc.RejectedConnections)
-	connections.WithLabelValues("rejected_by_client", inc.SNI.name).Add(inc.RejectedConnectionsByClient)
+func (inc *Inc) apply() {
+	seconds.WithLabelValues("active", inc.SNI).Add(inc.ActiveSeconds)
+	seconds.WithLabelValues("failed", inc.SNI).Add(inc.FailedSeconds)
+	seconds.WithLabelValues("active_failed", inc.SNI).Add(inc.ActiveFailedSeconds)
+	connections.WithLabelValues("successful", inc.SNI).Add(inc.SuccessfulConnections)
+	connections.WithLabelValues("rejected", inc.SNI).Add(inc.RejectedConnections)
+	connections.WithLabelValues("rejected_by_client", inc.SNI).Add(inc.RejectedConnectionsByClient)
 }
 
 func applySnapshot(snapshot promextra.Snapshot) {
@@ -76,61 +70,7 @@ func applySnapshot(snapshot promextra.Snapshot) {
 	}
 }
 
-func NewSNI(sni string) *SNI {
-	s := &SNI{
-		refreshTTL: make(chan interface{}),
-		name:       sni,
-	}
-	return s
-}
-
-type TTLTimer interface {
-	getChannel() <-chan time.Time
-	resetTimer()
-	cleanup()
-}
-
-type RealTimer struct {
-	Timer *time.Timer
-}
-
-func (t *RealTimer) getChannel() <-chan time.Time {
-	return t.Timer.C
-}
-
-func (t *RealTimer) resetTimer() {
-	t.Timer.Stop()
-	t.Timer.Reset(TTL)
-}
-
-func (t *RealTimer) cleanup() {
-	t.Timer.Stop()
-}
-
-func (sni *SNI) StartTTL(t TTLTimer) {
-	go waitForTTL(t, sni)
-}
-
-func waitForTTL(t TTLTimer, sni *SNI) {
-	defer t.cleanup()
-	for {
-		select {
-		case <-sni.refreshTTL:
-			t.resetTimer()
-		case <-t.getChannel():
-			// The SNI is expired and should be removed from the SNIs map.
-			SNIMutex.Lock()
-			sni.Expired = true
-			SNIMutex.Unlock()
-			// The metrics for this SNI have existed longer than
-			// TTL and should no longer be exposed.
-			deleteMetrics(sni.name)
-			return
-		}
-	}
-}
-
-func deleteMetrics(sni string) {
+func DeleteMetrics(sni string) {
 	seconds.DeleteLabelValues("active", sni)
 	seconds.DeleteLabelValues("failed", sni)
 	seconds.DeleteLabelValues("active_failed", sni)

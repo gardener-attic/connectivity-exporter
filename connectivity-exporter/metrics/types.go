@@ -5,7 +5,6 @@
 package metrics
 
 import (
-	"sync"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -22,23 +21,15 @@ type Inc struct {
 	SuccessfulConnections,
 	RejectedConnections,
 	RejectedConnectionsByClient float64
-	SNI *SNI
-}
-
-type SNI struct {
-	refreshTTL chan interface{}
-	name       string
-	Expired    bool
+	SNI string
 }
 
 const (
-	TTL       time.Duration = time.Minute * 15
-	namespace               = "connectivity_exporter"
+	Expiration = time.Minute * 15
+	namespace  = "connectivity_exporter"
 )
 
 var (
-	SNIMutex = sync.Mutex{}
-
 	seconds = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Namespace: namespace,
