@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 REGISTRY ?= ghcr.io
-IMAGE_NAME ?= gardener/connectivity-monitor
+IMAGE_NAME ?= gardener/connectivity-exporter
 IMAGE_TAG ?= main
 
 all: build

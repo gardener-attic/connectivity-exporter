@@ -99,7 +99,6 @@ struct tuple_data_t {
   } state;
   char sni[TLS_MAX_SERVER_NAME_LEN];
   // The following two fields cause clang to crash when set to __u16.
-  // More info: https://github.tools.sap/kubernetes/connectivity-monitor/pull/109#discussion_r453913
   __u64 num_packets;
   __u64 total_data_bytes;
   __u64 ticker_clock_first_packet;

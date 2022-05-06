@@ -15,4 +15,4 @@ COPY --from=builder /build/bin/connectivity-exporter /bin/connectivity-exporter
 ENTRYPOINT [ "/bin/connectivity-exporter" ]
 
 # Example command:
-# docker run --privileged --net=host -ti --rm ghcr.io/gardener/connectivity-monitor:main -r 0.0.0.0/0 -p 443
+# docker run --privileged --net=host -ti --rm ghcr.io/gardener/connectivity-exporter:main -r 0.0.0.0/0 -p 443

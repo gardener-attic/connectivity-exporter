@@ -1,4 +1,4 @@
-# New eBPF architecture for connectivity-monitor
+# New eBPF architecture for connectivity-exporter
 
 ![Flows of execution](flows.png "Flows of execution")
 

@@ -38,7 +38,7 @@ We can distinguish multiple failure types:
 
 - There is no network connectivity to the api server.
 
-  The focus of this connectivity-monitor component.
+  The focus of this connectivity-exporter component.
 
   New TCP connections to the kubernetes api server are observed to confirm that
   all the components along the network path to the kubernetes api server, and
@@ -48,17 +48,17 @@ We can distinguish multiple failure types:
   connection tracking tables, or the reverse proxy might be overloaded to accept
   any new connections.
   The mundane failure case that there are no running api server processes is
-  also covered by the connectivity monitor.
+  also covered by the connectivity-exporter.
 
 - The api server reports an internal server error.
 
-  Detecting this failure type is not feasible for the connectivity-monitor
+  Detecting this failure type is not feasible for the connectivity-exporter
   component; it can be achieved by processing the access logs of the api server.
 
   The failure cases when the connection is successfully established, but the api
   server detects and returns a internal server failure (4xx - user error, 5xx -
   internal error) are considered as successful connection attempts, hence the
-  connectivity monitor yields an upper bound for meaningful availability.
+  connectivity-exporter yields an upper bound for meaningful availability.
   This situations can be detected on the server side, by parsing the access
   logs, knowing that due to the successful connections we can expect to find
   matching access logs.
