@@ -35,6 +35,6 @@ ubuntu@vm$ echo 'PATH=$PATH:/usr/lib/go-1.18/bin' >> ~/.bashrc; source ~/.bashrc
 ### Compile the program
 
 ```shell
-ubuntu@vm$ cd /to/mount/directory/connectivity-monitor
+ubuntu@vm$ cd /to/mount/directory/connectivity-exporter
 ubuntu@vm$ make build
 ```

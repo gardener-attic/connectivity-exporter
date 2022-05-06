@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: Gardener connectivity monitor
+Upstream-Name: Gardener connectivity exporter
 Upstream-Contact: The Gardener project <gardener@googlegroups.com>
-Source: https://github.com/gardener/connectivity-monitor
+Source: https://github.com/gardener/connectivity-exporter
 Comment:
 
 # --------------------------------------------------
@@ -13,7 +13,7 @@ Files:
   **/.gitignore
   **/go.mod
   **/go.sum
-  charts/connectivity-monitor/dashboards/*.json
+  charts/connectivity-exporter/dashboards/*.json
 Copyright: 2021 SAP SE or an SAP affiliate company and Gardener contributors
 License: Apache-2.0
 
