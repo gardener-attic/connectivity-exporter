@@ -321,7 +321,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "decimals": null,
+      "decimals": 0,
       "description": "",
       "fieldConfig": {
         "defaults": {},
@@ -334,6 +334,402 @@
         "w": 6,
         "x": 0,
         "y": 7
+      },
+      "hiddenSeries": false,
+      "id": 18,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.13",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": false,
+          "expr": "floor(downtime{in=\"hour\", sni=~\"$sni\", kind=\"active_failed\"} * 60 * 60)",
+          "interval": "",
+          "legendFormat": "{{sni}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": "1h",
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Downtime",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:60",
+          "decimals": 0,
+          "format": "short",
+          "label": "seconds",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:61",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "decimals": 0,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 7
+      },
+      "hiddenSeries": false,
+      "id": 19,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.13",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": false,
+          "expr": "floor(downtime{in=\"day\", sni=~\"$sni\", kind=\"active_failed\"} * 60 * 60 * 24)",
+          "interval": "",
+          "legendFormat": "{{sni}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": "1d",
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Downtime",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:60",
+          "decimals": 0,
+          "format": "short",
+          "label": "seconds",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:61",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "decimals": 0,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 7
+      },
+      "hiddenSeries": false,
+      "id": 20,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.13",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": false,
+          "expr": "floor(downtime{in=\"week\", sni=~\"$sni\", kind=\"active_failed\"} * 60 * 60 * 24 * 7)",
+          "interval": "",
+          "legendFormat": "{{sni}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": "1w",
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Downtime",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:60",
+          "decimals": 0,
+          "format": "short",
+          "label": "seconds",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:61",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "decimals": 0,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 7
+      },
+      "hiddenSeries": false,
+      "id": 21,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.13",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": false,
+          "expr": "floor(downtime{in=\"calendarmonth\", sni=~\"$sni\", kind=\"active_failed\"} * 60 * 60 * 24 * scalar(days_in_month(month())))",
+          "interval": "",
+          "legendFormat": "{{sni}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": "30d",
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Downtime",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:60",
+          "decimals": 0,
+          "format": "short",
+          "label": "seconds",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:61",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "decimals": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 15
       },
       "hiddenSeries": false,
       "id": 8,
@@ -459,7 +855,7 @@
         "h": 8,
         "w": 6,
         "x": 6,
-        "y": 7
+        "y": 15
       },
       "hiddenSeries": false,
       "id": 2,
@@ -585,7 +981,7 @@
         "h": 8,
         "w": 6,
         "x": 12,
-        "y": 7
+        "y": 15
       },
       "hiddenSeries": false,
       "id": 9,
@@ -711,7 +1107,7 @@
         "h": 8,
         "w": 6,
         "x": 18,
-        "y": 7
+        "y": 15
       },
       "hiddenSeries": false,
       "id": 10,
@@ -826,7 +1222,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 23
       },
       "id": 12,
       "panels": [],
@@ -851,7 +1247,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 24
       },
       "hiddenSeries": false,
       "id": 14,
@@ -966,7 +1362,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 33
       },
       "id": 17,
       "panels": [
@@ -1082,11 +1478,6 @@
     "list": [
       {
         "allValue": "(.+)",
-        "current": {
-          "selected": true,
-          "text": "api.aws-oot-control.mcm-ci.internal.dev.k8s.ondemand.com",
-          "value": "api.aws-oot-control.mcm-ci.internal.dev.k8s.ondemand.com"
-        },
         "datasource": null,
         "definition": "label_values(downtime{}, sni)",
         "description": null,
@@ -1114,7 +1505,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-5m",
     "to": "now-1m"
   },
   "timepicker": {
