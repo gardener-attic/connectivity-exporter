@@ -5,7 +5,7 @@
 groups:
 
 - name: error_budget
-  interval: 10s
+  interval: 30s
   rules:
 
   - record: service:sli_seconds
@@ -13,8 +13,8 @@ groups:
     expr: |
       max by (sni, kind) (
         clamp_max(
-          rate(connectivity_exporter_seconds_total{kind=~"failed|active_failed"}[1m]) * 10,
-          10
+          rate(connectivity_exporter_seconds_total{kind=~"failed|active_failed"}[2m]) * 30,
+          30
         )
       )
 
