@@ -20,10 +20,10 @@ The network path from the shoot cluster to the api server.
 The shoot cluster's api server is hosted in the seed cluster and the network
 path involves several hops:
 
-- the NAT gateway in the shoot cluster,
-- the load balancer in the seed cluster,
-- a k8s service hop and
-- the envoy reverse proxy.
+- the NAT gateway in the shoot cluster
+- the load balancer in the seed cluster
+- a k8s service hop
+- the envoy reverse proxy
 
 The reverse proxy terminates the TCP connection, starts the TLS negotiation and
 chooses the api server of the shoot cluster based on the server name extension
