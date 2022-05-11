@@ -65,7 +65,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "count(count(downtime{sni=~\".*$sni.*\"}) by (sni))",
+          "expr": "count(count(downtime{interval=\"$interval\", in=\"$in\", sni=~\".*$sni.*\"}) by (sni))",
           "instant": true,
           "interval": "",
           "legendFormat": "",
@@ -123,7 +123,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "count(((1-downtime{in=~\"$in\",kind=\"active_failed\",sni=~\".*$sni.*\"})*100) > 99.95)",
+          "expr": "count(((1-downtime{interval=\"$interval\", in=\"$in\", kind=\"active_failed\", sni=~\".*$sni.*\"})*100) > 99.95)",
           "instant": true,
           "interval": "",
           "legendFormat": "",
@@ -185,7 +185,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "count(((1-downtime{in=~\"$in\",kind=\"active_failed\", sni=~\".*$sni.*\"})*100) < 99.95)",
+          "expr": "count(((1-downtime{interval=\"$interval\", in=\"$in\", kind=\"active_failed\", sni=~\".*$sni.*\"})*100) < 99.95)",
           "instant": true,
           "interval": "",
           "legendFormat": "",
@@ -300,7 +300,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "(1 - topk(10,downtime{in=~\"$in\", kind=\"active_failed\", sni=~\".*$sni.*\"})) * 100",
+          "expr": "(1 - topk(10,downtime{interval=\"$interval\", in=\"$in\", kind=\"active_failed\", sni=~\".*$sni.*\"})) * 100",
           "instant": true,
           "interval": "",
           "legendFormat": "{{sni}}",
@@ -432,7 +432,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "topk(10,((1-downtime{in=~\"$in\", kind=\"active_failed\", sni=~\".*$sni.*\"}) * 100) < 100)",
+          "expr": "topk(10,((1-downtime{interval=\"$interval\", in=\"$in\", kind=\"active_failed\", sni=~\".*$sni.*\"}) * 100) < 100)",
           "instant": true,
           "interval": "",
           "legendFormat": "{{sni}}",
@@ -468,12 +468,43 @@
       {
         "allValue": null,
         "current": {
+          "selected": false,
+          "text": "anchored",
+          "value": "anchored"
+        },
+        "datasource": null,
+        "definition": "label_values(downtime:interval, interval)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "interval",
+        "options": [],
+        "query": {
+          "query": "label_values(downtime:interval, interval)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
           "selected": true,
           "text": "week",
           "value": "week"
         },
         "datasource": null,
-        "definition": "label_values(downtime:in, in)",
+        "definition": "label_values(downtime:in{interval=\"$interval\"}, in)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -483,7 +514,7 @@
         "name": "in",
         "options": [],
         "query": {
-          "query": "label_values(downtime:in, in)",
+          "query": "label_values(downtime:in{interval=\"$interval\"}, in)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
