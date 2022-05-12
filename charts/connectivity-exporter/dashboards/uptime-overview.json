@@ -409,7 +409,7 @@
                   {
                     "targetBlank": true,
                     "title": "Go to ${__data.fields.SNI} dashboard",
-                    "url": "/d/error-budget/error-budget?orgId=1&var-sni=${__data.fields.SNI}"
+                    "url": "/d/uptime/uptime?orgId=1&var-sni=${__data.fields.SNI}"
                   }
                 ]
               }
