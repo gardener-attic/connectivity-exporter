@@ -374,7 +374,7 @@
       "timeFrom": "1h",
       "timeRegions": [],
       "timeShift": null,
-      "title": "Downtime",
+      "title": "Downtime (hourly)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -473,7 +473,7 @@
       "timeFrom": "1d",
       "timeRegions": [],
       "timeShift": null,
-      "title": "Downtime",
+      "title": "Downtime (daily)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -572,7 +572,7 @@
       "timeFrom": "1w",
       "timeRegions": [],
       "timeShift": null,
-      "title": "Downtime",
+      "title": "Downtime (weekly)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -671,7 +671,7 @@
       "timeFrom": "30d",
       "timeRegions": [],
       "timeShift": null,
-      "title": "Downtime",
+      "title": "Downtime (montly)",
       "tooltip": {
         "shared": true,
         "sort": 0,
