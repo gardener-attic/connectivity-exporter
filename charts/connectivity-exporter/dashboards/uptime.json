@@ -1493,7 +1493,7 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
-        "regex": "",
+        "regex": "/.+rejekts.+|.+tm.+/",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",

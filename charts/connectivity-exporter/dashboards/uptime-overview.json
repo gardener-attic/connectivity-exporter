@@ -300,7 +300,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "(1 - topk(10,downtime{in=~\"$in\", kind=\"active_failed\", sni=~\".*$sni.*\"})) * 100",
+          "expr": "(1 - topk(10,downtime{in=~\"$in\", kind=\"active_failed\", sni=~\".*$sni.*\", sni=~\".+rejekts.+|.+tm.+\"})) * 100",
           "instant": true,
           "interval": "",
           "legendFormat": "{{sni}}",
@@ -432,7 +432,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "topk(10,((1-downtime{in=~\"$in\", kind=\"active_failed\", sni=~\".*$sni.*\"}) * 100) < 100)",
+          "expr": "topk(10,((1-downtime{in=~\"$in\", kind=\"active_failed\", sni=~\".*$sni.*\", sni=~\".+rejekts.+|.+tm.+\"}) * 100) < 100)",
           "instant": true,
           "interval": "",
           "legendFormat": "{{sni}}",
