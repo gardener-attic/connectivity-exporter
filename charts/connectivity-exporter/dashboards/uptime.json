@@ -762,7 +762,7 @@
           "exemplar": false,
           "expr": "(1-downtime{in=\"hour\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "interval": "",
-          "legendFormat": "{{sni}}:{{in}}",
+          "legendFormat": "{{sni}}",
           "refId": "A"
         },
         {
@@ -888,7 +888,7 @@
           "exemplar": false,
           "expr": "(1-downtime{in=\"day\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "interval": "",
-          "legendFormat": "{{sni}}:{{in}}",
+          "legendFormat": "{{sni}}",
           "refId": "A"
         },
         {
@@ -1014,7 +1014,7 @@
           "exemplar": false,
           "expr": "(1-downtime{in=\"week\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "interval": "",
-          "legendFormat": "{{sni}}:{{in}}",
+          "legendFormat": "{{sni}}",
           "refId": "A"
         },
         {
@@ -1140,7 +1140,7 @@
           "exemplar": false,
           "expr": "(1-downtime{in=\"calendarmonth\", sni=~\"$sni\", kind=\"active_failed\"}) * 100",
           "interval": "",
-          "legendFormat": "{{sni}}:{{in}}",
+          "legendFormat": "{{sni}}",
           "refId": "A"
         },
         {
