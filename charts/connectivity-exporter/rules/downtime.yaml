@@ -4,7 +4,7 @@
 
 groups:
 
-- name: error_budget
+- name: downtime
   interval: 30s
   rules:
 
