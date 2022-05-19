@@ -19,6 +19,8 @@ grafana:
     dashboards:
       enabled: true
       searchNamespace: ALL
+      provider:
+        allowUiUpdates: true
   defaultDashboardsEnabled: false
 
 kubeApiServer:
