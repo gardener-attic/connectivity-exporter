@@ -48,9 +48,12 @@ groups:
       + ignoring(week) group_right
       count_values without() ("week",
         floor(
-          timestamp(
-            service:sli_seconds
-          ) / 60 / 60 / 24 / 7
+          (
+            timestamp(
+              service:sli_seconds
+            ) - 4 * 24 * 60 * 60
+          )
+          / 60 / 60 / 24 / 7
         )
       ) * 0
 
