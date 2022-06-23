@@ -4,7 +4,7 @@
 
 groups:
 
-- name: error_budget
+- name: downtime
   interval: 30s
   rules:
 
@@ -93,6 +93,7 @@ groups:
 
   - record: downtime
     labels:
+      interval: anchored
       in: hour
     expr: |
       sum without(hour) (
@@ -102,6 +103,7 @@ groups:
 
   - record: downtime
     labels:
+      interval: anchored
       in: day
     expr: |
       sum without(day) (
@@ -111,6 +113,7 @@ groups:
 
   - record: downtime
     labels:
+      interval: anchored
       in: week
     expr: |
       sum without(week) (
@@ -120,6 +123,7 @@ groups:
 
   - record: downtime
     labels:
+      interval: anchored
       in: calendarmonth
     expr: |
       sum without(year, month) (
@@ -131,8 +135,87 @@ groups:
           (service:sli_seconds:total{year!="", month!=""})
       ))
 
+  - record: service:sli_seconds:moving:total
+    expr: |
+      service:sli_seconds
+      +
+      (
+        max_over_time(
+          service:sli_seconds:moving:total[10m]
+        )
+        or
+        service:sli_seconds * 0
+      )
+
+  - record: downtime
+    labels:
+      interval: moving
+      in: hour
+    expr: |
+      (
+        service:sli_seconds:moving:total
+        -
+        (
+          service:sli_seconds:moving:total offset 1h
+          or
+          service:sli_seconds:moving:total * 0
+        )
+      )
+      / 60 / 60
+
+  - record: downtime
+    labels:
+      interval: moving
+      in: day
+    expr: |
+      (
+        service:sli_seconds:moving:total
+        -
+        (
+          service:sli_seconds:moving:total offset 1d
+          or
+          service:sli_seconds:moving:total * 0
+        )
+      )
+      / 60 / 60 / 24
+
+  - record: downtime
+    labels:
+      interval: moving
+      in: week
+    expr: |
+      (
+        service:sli_seconds:moving:total
+        -
+        (
+          service:sli_seconds:moving:total offset 1w
+          or
+          service:sli_seconds:moving:total * 0
+        )
+      )
+      / 60 / 60 / 24 / 7
+
+  - record: downtime
+    labels:
+      interval: moving
+      in: four_weeks
+    expr: |
+      (
+        service:sli_seconds:moving:total
+        -
+        (
+          service:sli_seconds:moving:total offset 4w
+          or
+          service:sli_seconds:moving:total * 0
+        )
+      )
+      / 60 / 60 / 24 / 7 / 4
+
+  - record: downtime:interval
+    expr: count by (interval) (downtime) * 0
+
   - record: downtime:in
-    expr: count by (in) (downtime) * 0
+    expr: count by (in, interval) (downtime) * 0
 
   - record: downtime:sni
     expr: count by (sni) (downtime) * 0
